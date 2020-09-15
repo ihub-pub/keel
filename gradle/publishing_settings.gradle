@@ -1,0 +1,21 @@
+apply {
+    plugin 'maven-publish'
+}
+
+publishing {
+    repositories {
+        maven {
+            name project.name
+            url maven_github_repo + project.name
+            credentials {
+                username System.getProperty('repo.username')
+                password System.getProperty('repo.password')
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from components.java
+        }
+    }
+}

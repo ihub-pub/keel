@@ -1,0 +1,23 @@
+apply {
+    plugin 'groovy'
+    from rootProject.file('gradle/publishing_settings.gradle')
+}
+
+group group_id
+version project_version
+
+repositories {
+    maven { url maven_central_repo_mirror_aliyun }
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.codehaus.groovy:groovy:$groovy_version",
+            "org.codehaus.groovy:groovy-cli-commons:$groovy_version",
+            "org.codehaus.groovy:groovy-nio:$groovy_version",
+            "org.codehaus.groovy:groovy-templates:$groovy_version",
+            "org.slf4j:slf4j-api:$slf4j_version"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$spring_boot_starter_version",
+            "org.spockframework:spock-spring:$spock_framework_version"
+}
