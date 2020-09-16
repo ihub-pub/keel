@@ -18,7 +18,7 @@ import spock.lang.Unroll
 class Test extends Specification {
 
     private builder = new ContextActuator(this.class.classLoader.getResource('test.dsl'))
-    private context = [a: 1, b: 2, c: 3, steps: []]
+    private context = [steps: []]
 
     /**
      * 用例01
@@ -29,7 +29,7 @@ class Test extends Specification {
         def result = builder context, 'flow_demo'
 
         then: '期望'
-        result == context << [steps: ['首步', '第一步', '第二步', '第三步', '第四步', '最后一步']]
+        result == ['首步', '第一步', '第二步', '第三步', '第四步', '最后一步']
     }
 
     /**
@@ -41,7 +41,7 @@ class Test extends Specification {
         def result = builder context, flow
 
         then: '期望'
-        result == context << [steps: expected]
+        result == expected
 
         where:
         name       | flow                                                      | expected

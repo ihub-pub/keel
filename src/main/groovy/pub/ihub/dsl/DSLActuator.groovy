@@ -60,7 +60,7 @@ class DSLActuator {
     }
 
     def call(Class groovyMethods = DSLGroovyMethods, String flow) {
-        execute groovyMethods, config.getFlow(flow) ?: throwMissingProperty(flow)
+        call groovyMethods, getFlow(flow)
     }
 
     def propertyMissing(String name) {
@@ -136,6 +136,10 @@ class DSLActuator {
                 throw new MissingMethodException(name, this.class)
             }
         }
+    }
+
+    protected Closure getFlow(String flow) {
+        config.getFlow(flow) ?: throwMissingProperty(flow)
     }
 
     private throwMissingProperty(String name) {

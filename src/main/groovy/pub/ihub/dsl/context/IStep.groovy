@@ -7,6 +7,6 @@ package pub.ihub.dsl.context
  */
 interface IStep<T> {
 
-    Tuple4<Integer, Integer, T, String> run(Context context)
+    T run(Context context)
 
 }

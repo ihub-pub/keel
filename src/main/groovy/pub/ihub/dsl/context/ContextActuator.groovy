@@ -1,7 +1,7 @@
 package pub.ihub.dsl.context
 
-import pub.ihub.dsl.DSLActuator
 import groovy.util.logging.Slf4j
+import pub.ihub.dsl.DSLActuator
 
 
 
@@ -21,22 +21,27 @@ class ContextActuator extends DSLActuator {
     }
 
     protected doCall(Class groovyMethods, Closure flow, ... args) {
+        def context = args.first() as Context
+        Context.context = context
+        // 如果执行结果为IStep或者Closure<RuntimeContext>时需要继续执行该步骤/子流程（流程只有一步的情况）
         use(groovyMethods, flow.with { it.rehydrate this, owner, thisObject })
-                .with { it instanceof IStep || it instanceof Closure<RuntimeContext> ? new RuntimeContext() >> it : it }
+                .with { it instanceof IStep || it instanceof Closure<Context> ? context >> it : it }.getPayload()
     }
 
     def call(Context context, Closure closure) {
-        RuntimeContext.context = context
-        call ContextGroovyMethods, closure
+        execute ContextGroovyMethods, closure, context
     }
 
     def call(Map context, Closure closure) {
         call new Context(context), closure
     }
 
+    def call(Context context, String flow) {
+        call context, getFlow(flow)
+    }
+
     def call(Map context, String flow) {
-        RuntimeContext.context = new Context(context)
-        call ContextGroovyMethods, flow
+        call new Context(context), getFlow(flow)
     }
 
 }
