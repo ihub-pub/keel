@@ -12,13 +12,13 @@ import pub.ihub.dsl.context.IStep
  */
 @TupleConstructor
 @Slf4j
-class Route implements IStep<Integer> {
+class Route implements IStep<Boolean> {
 
-    int step
+    boolean flag
 
-    Integer run(Context context) {
+    Boolean run(Context context) {
         log.debug 'context -> {}', context
-        step
+        flag
     }
 
 }

@@ -30,7 +30,7 @@ class MappingsConfig {
     private static final ThreadLocal<Map<String, Object>> NAME_BINDINGS_MAPPINGS_THREAD_LOCAL = new ThreadLocal<>()
 
     MappingsConfig(Map<String, Object> nameClassMappings,
-                   Map<String, Closure> nameFlowMappings,
+                   Map<String, Closure> nameFlowMappings = [:],
                    Map<String, Closure> flows = [:]) {
         this.nameClassMappings.putAll nameClassMappings
         this.nameFlowMappings.putAll nameFlowMappings

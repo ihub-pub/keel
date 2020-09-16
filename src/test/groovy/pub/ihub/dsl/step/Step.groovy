@@ -12,7 +12,7 @@ import pub.ihub.dsl.context.IStep
  */
 @TupleConstructor
 @Slf4j
-class Demo implements IStep<List> {
+class Step implements IStep<List> {
 
     String name = '默认步骤'
 

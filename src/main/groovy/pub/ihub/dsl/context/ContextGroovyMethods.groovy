@@ -38,10 +38,6 @@ class ContextGroovyMethods {
         context >> step >> fork
     }
 
-    static Context rightShift(Closure closure, Map fork) {
-        context >> closure >> fork
-    }
-
     static Closure leftShift(Closure template, Map bindings) {
         nameBindingsMappings = bindings
         template

@@ -12,7 +12,7 @@ import pub.ihub.dsl.DSLActuator
 @Slf4j
 class ContextActuator extends DSLActuator {
 
-    ContextActuator(Map<String, Object> nameClassMappings, Map<String, Closure> nameFlowMappings) {
+    ContextActuator(Map<String, Object> nameClassMappings, Map<String, Closure> nameFlowMappings = [:]) {
         super(nameClassMappings, nameFlowMappings)
     }
 
@@ -42,7 +42,7 @@ class ContextActuator extends DSLActuator {
     }
 
     def call(Map context, String flow) {
-        call new Context(context), getFlow(flow)
+        call new Context(context), flow
     }
 
 }
