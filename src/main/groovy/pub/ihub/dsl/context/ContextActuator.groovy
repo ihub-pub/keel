@@ -20,6 +20,7 @@ class ContextActuator extends DSLActuator {
         super(scriptLocation)
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     protected doCall(Class groovyMethods, Closure flow, ... args) {
         def context = args.first() as Context
         Context.context = context

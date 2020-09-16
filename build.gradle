@@ -1,5 +1,6 @@
 apply {
     plugin 'groovy'
+    from rootProject.file('gradle/verification_settings.gradle')
     from rootProject.file('gradle/publishing_settings.gradle')
 }
 

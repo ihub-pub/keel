@@ -1,8 +1,8 @@
-package pub.ihub.dsl
+package pub.ihub.dsl.test
 
-
-import pub.ihub.dsl.context.ContextActuator
 import groovy.util.logging.Slf4j
+import pub.ihub.dsl.context.ContextActuator
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Title
 import spock.lang.Unroll
@@ -15,10 +15,14 @@ import spock.lang.Unroll
  */
 @Title('测试套件')
 @Slf4j
-class Test extends Specification {
+class ContextActuatorUT extends Specification {
 
-    private builder = new ContextActuator(this.class.classLoader.getResource('test.dsl'))
-    private context = [steps: []]
+    @Shared
+    private builder
+
+    final setupSpec() {
+        builder = new ContextActuator(this.class.classLoader.getResource('test.dsl'))
+    }
 
     /**
      * 用例01
@@ -26,7 +30,7 @@ class Test extends Specification {
     @Unroll
     '单元测试 flow_demo'() {
         when: '执行配置流程'
-        def result = builder context, 'flow_demo'
+        def result = builder.call([steps: []], 'flow_demo')
 
         then: '期望'
         result == ['首步', '第一步', '第二步', '第三步', '第四步', '最后一步']
@@ -35,10 +39,11 @@ class Test extends Specification {
     /**
      * 用例02
      */
+    @SuppressWarnings('DuplicateListLiteral')
     @Unroll
     '单元测试 #name'() {
         when: '执行自定义流程'
-        def result = builder context, flow
+        def result = builder.call([steps: []], flow)
 
         then: '期望'
         result == expected

@@ -1,4 +1,4 @@
-package pub.ihub.dsl
+package pub.ihub.dsl.step
 
 import groovy.transform.TupleConstructor
 import groovy.util.logging.Slf4j
@@ -12,7 +12,7 @@ import pub.ihub.dsl.context.IStep
  */
 @TupleConstructor
 @Slf4j
-class StepDemo implements IStep<List> {
+class Demo implements IStep<List> {
 
     String name = '默认步骤'
 

@@ -16,7 +16,7 @@ import static java.lang.System.identityHashCode
 @Slf4j
 class ShellActuator extends DSLActuator {
 
-    private GroovyShell shell
+    private final GroovyShell shell
     /**
      * 脚本映射
      */
@@ -32,13 +32,17 @@ class ShellActuator extends DSLActuator {
         shell = new GroovyShell(config.binding)
     }
 
-    synchronized protected doCall(Class groovyMethods, String flow, String... args) {
-        shell.run "use $groovyMethods.canonicalName, { $flow }", "flow_${identityHashCode(flow)}", args
+    protected doCall(Class groovyMethods, String flow, String... args) {
+        synchronized (shell) {
+            shell.run "use $groovyMethods.canonicalName, { $flow }", "flow_${identityHashCode(flow)}", args
+        }
     }
 
-    synchronized static protected doCall(Class groovyMethods, Script flow, String... args) {
-        flow.setProperty 'args', args
-        flow.run()
+    static protected doCall(Class groovyMethods, Script flow, String... args) {
+        synchronized (flow) {
+            flow.setProperty 'args', args
+            flow.run()
+        }
     }
 
     def call(Class groovyMethods = DSLGroovyMethods, String flow) {

@@ -1,0 +1,85 @@
+apply {
+    plugin 'jacoco'        // 覆盖率报告
+    plugin 'codenarc'      // Groovy静态检查
+}
+
+/**
+ * CodeNarc Plugin Task Settings
+ */
+codenarc {
+    toolVersion = codenarc_version
+    configFile = rootProject.file('src/main/resources/codenarc.gcfg')
+    ignoreFailures = Boolean.FALSE
+}
+
+
+dependencies {
+
+    // Spock Framework
+    testImplementation "org.spockframework:spock-spring:$spock_framework_version"
+    // Spock Reports
+    testRuntimeOnly("com.athaydes:spock-reports:$spock_reports_version") {
+        transitive = false
+    }
+
+}
+
+
+jacoco {
+    toolVersion = jacoco_version
+}
+
+/**
+ * 分支覆盖率达到100%
+ */
+jacocoTestCoverageVerification {
+    violationRules {
+        // rule #1：bundle分支覆盖率
+        rule {
+            enabled = Boolean.valueOf(System.getProperty('jacoco.bundleBranchCoverageRuleEnabled', Boolean.TRUE.toString()))
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = System.getProperty('jacoco.bundleBranchCoveredRatio', '1.0') as BigDecimal
+            }
+        }
+        // rule #2：bundle指令覆盖率
+        rule {
+            enabled = Boolean.valueOf(System.getProperty('jacoco.bundleInstructionCoverageRuleEnabled', Boolean.TRUE.toString()))
+            excludes = System.getProperty('jacoco.bundleInstructionExclusion', 'com/cheche365/**/app').tokenize(',')
+            limit {
+                minimum = System.getProperty('jacoco.bundleInstructionCoveredRatio', '1.0') as BigDecimal
+            }
+        }
+        // rule #3：package指令覆盖率
+        rule {
+            enabled = Boolean.valueOf(System.getProperty('jacoco.packageInstructionCoverageRuleEnabled', Boolean.TRUE.toString()))
+            element = 'PACKAGE'
+            excludes = System.getProperty('jacoco.packageInstructionExclusion', '*.app,*.config').tokenize(',')
+            limit {
+                minimum = System.getProperty('jacoco.packageInstructionCoveredRatio', '1.0') as BigDecimal
+            }
+        }
+    }
+}
+
+/**
+ * 覆盖率报告排除main class
+ */
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect { dir ->
+            fileTree dir: dir, exclude: System.getProperty('jacoco.reportExclusion', '**/app/**/*.class')
+        })
+    }
+}
+
+/**
+ * 一些任务依赖和属性设置
+ */
+check.dependsOn jacocoTestCoverageVerification
+test.finalizedBy jacocoTestReport, jacocoTestCoverageVerification
+tasks.withType(Test) {
+    // 这是为了解决在项目根目录上执行test时Jacoco找不到依赖的类的问题
+    systemProperties.'user.dir' = workingDir
+}

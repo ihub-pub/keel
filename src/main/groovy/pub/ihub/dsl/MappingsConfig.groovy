@@ -37,6 +37,7 @@ class MappingsConfig {
         this.flows.putAll flows
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     MappingsConfig(URL scriptLocation, boolean mergeBase = true) {
         def config = mergeBase ? parse(getClass().classLoader.getResource('base_config.dsl'))
                 .merge(parse(scriptLocation)) : parse(scriptLocation).flatten()

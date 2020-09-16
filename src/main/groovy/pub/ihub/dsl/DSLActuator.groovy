@@ -47,8 +47,6 @@ class DSLActuator {
         ACTUATOR_THREAD_LOCAL.set this
         try {
             doCall groovyMethods, flow, args
-        } catch (e) {
-            throw e
         } finally {
             ACTUATOR_THREAD_LOCAL.remove()
             log.debug '<<<<<<<<<< 流程执行结束，耗时{}秒', (currentTimeMillis() - beginTime) / 1000
@@ -120,7 +118,7 @@ class DSLActuator {
     }
 
     private static runMethod(method, args) {
-        throw new DSLException(method?.toString() + '方法类型无法执行！')
+        throw new DSLException("${method.toString()}方法类型无法执行！")
     }
 
     private static getArgs(args) {
