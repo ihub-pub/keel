@@ -25,7 +25,3 @@ nameClassMappings = [
             }
         }
 ]
-
-nameFlowMappings = [
-        片段一: { 方法二 参数一, 参数二 方法三 '-', 0 方法四 '-' 方法五 参数三 }
-]

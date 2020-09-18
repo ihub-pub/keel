@@ -76,16 +76,15 @@ class ContextActuatorUT extends ATestActuatorUT {
         def ac = new ContextActuator([
                 第一步: new Step('第一步'),
                 第二步: new Step('第二步'),
-                第三步: new Step('第三步'),
-                第四步: new Step('第四步')
+                第三步: new Step('第三步')
         ])
         def context = [steps: []]
 
         when: '执行内置流程'
-        def result = ac context, { 第一步 >> 第二步 >> 第三步 >> 第四步 }
+        def result = ac context, { 第一步 >> 第二步 >> 第三步 }
 
         then: '校验期望结果'
-        result == ['第一步', '第二步', '第三步', '第四步']
+        result == ['第一步', '第二步', '第三步']
     }
 
 }

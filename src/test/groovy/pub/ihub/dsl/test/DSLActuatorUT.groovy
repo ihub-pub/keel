@@ -2,8 +2,6 @@ package pub.ihub.dsl.test
 
 import groovy.util.logging.Slf4j
 import pub.ihub.dsl.DSLActuator
-import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Title
 import spock.lang.Unroll
 
@@ -15,13 +13,11 @@ import spock.lang.Unroll
  */
 @Title('测试套件')
 @Slf4j
-class DSLActuatorUT extends Specification {
+class DSLActuatorUT extends ATestActuatorUT {
 
-    @Shared
-    private builder
-
-    final setupSpec() {
-        builder = new DSLActuator(this.class.classLoader.getResource('test2.dsl'))
+    @Override
+    def getActuator(URL scriptLocation) {
+        new DSLActuator(scriptLocation)
     }
 
     /**
@@ -30,7 +26,7 @@ class DSLActuatorUT extends Specification {
     @Unroll
     '单元测试 #name'() {
         when: '执行自定义流程'
-        def result = builder.call flow
+        def result = actuator.call flow
 
         then: '期望'
         result == expected

@@ -22,7 +22,7 @@ class ShellActuator extends DSLActuator {
      */
     private final Map<Integer, Script> flows = [:]
 
-    ShellActuator(URL scriptLocation) {
+    ShellActuator(URL scriptLocation = null) {
         super(scriptLocation)
         shell = new GroovyShell(config.binding)
     }

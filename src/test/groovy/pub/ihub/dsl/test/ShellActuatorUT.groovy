@@ -21,7 +21,7 @@ class ShellActuatorUT extends Specification {
     private builder2
 
     final setupSpec() {
-        builder2 = new ShellActuator(this.class.classLoader.getResource('test2.dsl'))
+        builder2 = new ShellActuator()
     }
 
     /**

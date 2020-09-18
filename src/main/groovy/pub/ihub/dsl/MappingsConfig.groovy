@@ -37,10 +37,14 @@ class MappingsConfig {
         this.flows.putAll flows
     }
 
+    /**
+     * 配置脚本构造器
+     * base_config为全局公共配置，文件名base_config.dsl，路径在resources根目录下
+     * @param scriptLocation 配置脚本URL
+     */
     @SuppressWarnings('UnnecessaryGetter')
-    MappingsConfig(URL scriptLocation, boolean mergeBase = true) {
-        def config = mergeBase ? parse(getClass().classLoader.getResource('base_config.dsl'))
-                .merge(parse(scriptLocation)) : parse(scriptLocation).flatten()
+    MappingsConfig(URL scriptLocation) {
+        def config = parse(getClass().classLoader.getResource('base_config.dsl')).merge parse(scriptLocation)
         nameClassMappings.putAll config.nameClassMappings.collectEntries { key, value ->
             [(key): value instanceof Class ? value.getDeclaredConstructor().newInstance() : value]
         } as Map<String, Object>
@@ -54,16 +58,15 @@ class MappingsConfig {
      * @return 配置
      */
     private static ConfigObject parse(URL scriptLocation) {
-        scriptLocation?.with { ConfigSlurper().parse(it) } ?: new ConfigObject()
+        scriptLocation?.with {
+            log.trace '解析配置 <<< {}', path
+            ConfigSlurper().parse it
+        } ?: new ConfigObject()
     }
 
     static void setNameBindingsMappings(Map<String, Object> bindings) {
         NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.remove()
         NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.set bindings
-    }
-
-    private static Map<String, Object> getNameBindingsMappings() {
-        NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get() ?: [:]
     }
 
     void putNameClazzMapping(String name, value) {
@@ -93,7 +96,7 @@ class MappingsConfig {
     }
 
     static getBinding(String name) {
-        nameBindingsMappings[name]?.tap {
+        NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get()?.get(name)?.tap {
             log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
         }
     }

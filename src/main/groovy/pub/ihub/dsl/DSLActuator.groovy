@@ -17,8 +17,8 @@ class DSLActuator {
 
     protected MappingsConfig config
 
-    DSLActuator(URL scriptLocation) {
-        config = new MappingsConfig(scriptLocation)
+    DSLActuator(URL scriptLocation = null) {
+        config = new MappingsConfig(scriptLocation as URL)
     }
 
     DSLActuator(Map<String, Object> nameClassMappings, Map<String, Closure> nameFlowMappings) {
@@ -49,7 +49,8 @@ class DSLActuator {
             doCall groovyMethods, flow, args
         } finally {
             ACTUATOR_THREAD_LOCAL.remove()
-            log.debug '<<<<<<<<<< 流程执行结束，耗时{}秒', (currentTimeMillis() - beginTime) / 1000
+            def time = (currentTimeMillis() - beginTime) / 1000
+            log.debug '<<<<<<<<<< 流程执行结束，耗时{}秒', time
         }
     }
 
