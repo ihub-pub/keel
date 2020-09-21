@@ -77,27 +77,41 @@ class MappingsConfig {
         new Binding(nameClassMappings)
     }
 
-    def getClass(String name) {
-        nameClassMappings[name]?.tap {
-            log.trace '获取 <<<步骤/属性/方法<<< {} <- {}', name, it
-        }
-    }
-
-    Closure getSubFlow(String name) {
-        nameFlowMappings[name]?.tap {
-            log.trace '获取 <<<子流程<<< {}', name
+    def getMethod(String name) {
+        nameClassMappings[name].tap {
+            if (it) {
+                log.trace '获取 <<<方法<<< {} <- {}', name, it
+            } else {
+                log.error '方法没有定义：{}', name
+                throw new MissingMethodException(name, this.class)
+            }
         }
     }
 
     Closure getFlow(String name) {
-        flows[name]?.tap {
-            log.trace '获取 <<<流程<<< {}', name
+        flows[name].tap {
+            if (it) {
+                log.trace '获取 <<<流程<<< {}', name
+            } else {
+                log.error '流程没有定义：{}', name
+                throw new MissingPropertyException(name, this.class)
+            }
         }
     }
 
-    static getBinding(String name) {
-        NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get()?.get(name)?.tap {
-            log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
+    def getMissProperty(String name, delegate) {
+        nameClassMappings[name]?.tap {
+            log.trace '获取 <<<步骤/属性<<< {} <- {}', name, it
+        } ?: nameFlowMappings[name]?.with {
+            log.trace '获取 <<<子流程<<< {}', name
+            it.rehydrate delegate, owner, thisObject
+        } ?: NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get().get(name).tap {
+            if (it) {
+                log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
+            } else {
+                log.error '步骤/属性没有定义：{}', name
+                throw new MissingPropertyException(name, this.class)
+            }
         }
     }
 

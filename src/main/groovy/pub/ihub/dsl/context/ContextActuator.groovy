@@ -38,7 +38,7 @@ class ContextActuator extends DSLActuator {
     }
 
     def call(Context context, String flow) {
-        call context, getFlow(flow)
+        call context, config.getFlow(flow)
     }
 
     def call(Map context, String flow) {

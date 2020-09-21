@@ -8,7 +8,7 @@ apply {
  */
 codenarc {
     toolVersion = codenarc_version
-    configFile = rootProject.file('src/main/resources/codenarc.gcfg')
+    configFile = rootProject.file('conf/engineering-process/static-checking/groovy/codenarc.gcfg')
     ignoreFailures = Boolean.FALSE
 }
 

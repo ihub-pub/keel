@@ -59,14 +59,11 @@ class DSLActuator {
     }
 
     def call(Class groovyMethods = DSLGroovyMethods, String flow) {
-        call groovyMethods, getFlow(flow)
+        call groovyMethods, config.getFlow(flow)
     }
 
     def propertyMissing(String name) {
-        config.getClass(name)
-                ?: config.getSubFlow(name)?.with { it.rehydrate this, owner, thisObject }
-                ?: config.getBinding(name)
-                ?: throwMissingProperty(name)
+        config.getMissProperty name, this
     }
 
     def propertyMissing(String name, value) {
@@ -85,7 +82,7 @@ class DSLActuator {
      */
     def actuatorMethodMissing(String name, args) {
         log.trace '执行器 >>>执行>>> {} ({})', name, args
-        runMethod getMethod(name), args
+        runMethod config.getMethod(name), args
     }
 
     /**
@@ -97,7 +94,7 @@ class DSLActuator {
      */
     def selfMethodMissing(self, String name, args) {
         log.trace '{} >>>执行>>> {} ({})', self, name, args
-        getMethod(name).with {
+        config.getMethod(name).with {
             if (it instanceof Closure) {
                 runMethod it.curry(self), args
             } else if (it instanceof String) {
@@ -124,26 +121,6 @@ class DSLActuator {
 
     private static getArgs(args) {
         args.with { size() > 1 ? toList() : first() }
-    }
-
-    private getMethod(String name) {
-        config.getClass(name).tap {
-            if (it) {
-                log.trace '获取 <<<方法<<< {} <- {}', name, it
-            } else {
-                log.error '方法没有定义：{}', name
-                throw new MissingMethodException(name, this.class)
-            }
-        }
-    }
-
-    protected Closure getFlow(String flow) {
-        config.getFlow(flow) ?: throwMissingProperty(flow)
-    }
-
-    private throwMissingProperty(String name) {
-        log.error '步骤/属性/流程没有定义：{}', name
-        throw new MissingPropertyException(name, this.class)
     }
 
 }
