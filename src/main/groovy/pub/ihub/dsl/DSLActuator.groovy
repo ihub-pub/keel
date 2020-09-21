@@ -102,7 +102,7 @@ class DSLActuator {
             } else if (it instanceof DSLMethod) {
                 runMethod it, [self] + args.toList()
             } else {
-                runMethod it, args
+                throw new DSLException("${name}方法类型无法执行！")
             }
         }
     }

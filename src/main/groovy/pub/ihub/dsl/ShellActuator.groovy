@@ -34,7 +34,7 @@ class ShellActuator extends DSLActuator {
 
     protected doCall(Class groovyMethods, String flow, String... args) {
         synchronized (shell) {
-            shell.run "use $groovyMethods.canonicalName, { $flow }", "flow_${identityHashCode(flow)}", args
+            shell.evaluate "use $groovyMethods.canonicalName, { $flow }"
         }
     }
 
@@ -46,25 +46,17 @@ class ShellActuator extends DSLActuator {
     }
 
     def call(Class groovyMethods = DSLGroovyMethods, String flow) {
-        call groovyMethods, flow, false
+        shell.setVariable groovyMethods.canonicalName, groovyMethods
+        execute groovyMethods, flow, null
     }
 
     def call(Class groovyMethods = DSLGroovyMethods, String flow, String... args) {
-        call groovyMethods, flow, false, args
-    }
-
-    def call(Class groovyMethods = DSLGroovyMethods, String flow, boolean cacheScript, String... args) {
         def methodsName = groovyMethods.canonicalName
-        if (cacheScript) {
-            def code = identityHashCode flow
-            execute groovyMethods, flows[code] ?: shell.parse("use $methodsName, { $flow }").tap {
-                binding = new Binding([(methodsName): groovyMethods] + binding.variables)
-                flows.put code, it
-            }, args
-        } else {
-            shell.setVariable methodsName, groovyMethods
-            execute groovyMethods, flow, args
-        }
+        def code = identityHashCode flow
+        execute groovyMethods, flows[code] ?: shell.parse("use $methodsName, { $flow }").tap {
+            binding = new Binding([(methodsName): groovyMethods] + binding.variables)
+            flows.put code, it
+        }, args
     }
 
 }

@@ -105,10 +105,10 @@ class MappingsConfig {
         } ?: nameFlowMappings[name]?.with {
             log.trace '获取 <<<子流程<<< {}', name
             it.rehydrate delegate, owner, thisObject
-        } ?: NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get().get(name).tap {
-            if (it) {
-                log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
-            } else {
+        } ?: NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get()?.get(name)?.tap {
+            log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
+        }.tap {
+            if (!it) {
                 log.error '步骤/属性没有定义：{}', name
                 throw new MissingPropertyException(name, this.class)
             }

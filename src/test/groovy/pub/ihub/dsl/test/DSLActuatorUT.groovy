@@ -130,11 +130,18 @@ class DSLActuatorUT extends ATestActuatorUT {
         given: '初始化参数'
         def ac = actuator
 
-        when: '执行自定义流程'
-        ac { 方法一 参数一 不可执行方法 参数二 }
+        when: '执行器不可执行方法'
+        ac { 不可执行方法 参数一 }
 
         then: '期望：不可执行方法'
         def ex = thrown DSLException
+        ex.message.contains '方法类型无法执行！'
+
+        when: '当前执行对象不可执行方法'
+        ac { 方法一 参数一 不可执行方法 参数二 }
+
+        then: '期望：不可执行方法'
+        ex = thrown DSLException
         ex.message.contains '方法类型无法执行！'
     }
 
@@ -142,18 +149,17 @@ class DSLActuatorUT extends ATestActuatorUT {
      * 用例08
      */
     @Unroll
-    '单元测试：设置属性'() {
+    '单元测试：上一步返回值为null，无法继续执行方法'() {
         given: '初始化参数'
         def ac = actuator
-        ac.一 = 'p1'
-        ac.二 = 'p2'
-        ac.三 = 'p3'
+        ac.无返回值方法 = { a -> }
 
         when: '执行自定义流程'
-        def result = ac { 方法一 一 方法二 二 方法二 三 }
+        ac { 无返回值方法 参数一 方法二 参数二 方法二 参数三 }
 
-        then: '校验期望结果'
-        result == 'p1-p2-p3'
+        then: '期望：不可执行方法'
+        def ex = thrown DSLException
+        ex.message.contains '上一步返回值为null'
     }
 
     private class DefGroovyMethods {
