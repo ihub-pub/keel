@@ -44,7 +44,8 @@ class MappingsConfig {
      */
     @SuppressWarnings('UnnecessaryGetter')
     MappingsConfig(URL scriptLocation) {
-        def config = parse(getClass().classLoader.getResource('base_config.dsl')).merge parse(scriptLocation)
+        def config = parse(getClass().classLoader.getResource('base_config.dsl'))
+                .with { scriptLocation ? merge(parse(scriptLocation)) : it }
         nameClassMappings.putAll config.nameClassMappings.collectEntries { key, value ->
             [(key): value instanceof Class ? value.getDeclaredConstructor().newInstance() : value]
         } as Map<String, Object>
@@ -58,10 +59,10 @@ class MappingsConfig {
      * @return 配置
      */
     private static ConfigObject parse(URL scriptLocation) {
-        scriptLocation?.with {
+        scriptLocation.with {
             log.trace '解析配置 <<< {}', path
             ConfigSlurper().parse it
-        } ?: new ConfigObject()
+        }
     }
 
     static void setNameBindingsMappings(Map<String, Object> bindings) {

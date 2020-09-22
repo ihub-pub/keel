@@ -63,4 +63,23 @@ class ShellActuatorUT extends ATestActuatorUT {
         'flow_3' | ['p7', 'p8', 'p9'] | 'p7-p8-p9'
     }
 
+    /**
+     * 用例03
+     */
+    @Unroll
+    '单元测试：测试构造器初始化执行器'() {
+        given: '初始化参数'
+        def ac = new ShellActuator([
+                参数一: 'p1',
+                参数二: 'p2',
+                参数三: 'p3'
+        ])
+
+        when: '执行内置流程'
+        def result = ac '参数一 + \'-\' + 参数二 + \'-\' + 参数三'
+
+        then: '校验期望结果'
+        result == 'p1-p2-p3'
+    }
+
 }

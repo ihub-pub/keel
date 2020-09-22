@@ -28,7 +28,7 @@ class ShellActuator extends DSLActuator {
     }
 
     ShellActuator(Map<String, Object> nameClassMappings) {
-        super(nameClassMappings, null)
+        super(nameClassMappings, [:])
         shell = new GroovyShell(config.binding)
     }
 
