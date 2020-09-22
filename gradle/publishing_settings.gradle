@@ -2,6 +2,10 @@ apply {
     plugin 'maven-publish'
 }
 
+java {
+    withSourcesJar()
+}
+
 publishing {
     repositories {
         maven {
@@ -14,7 +18,7 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
         }
     }
