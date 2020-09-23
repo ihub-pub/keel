@@ -19,5 +19,5 @@ jobs:
       env:
         IS_SNAPSHOT: true
         VERSION: ${{ secrets.PROJECT_VERSION }}
-        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_USERNAME: henry.git@outlook.com
         GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
