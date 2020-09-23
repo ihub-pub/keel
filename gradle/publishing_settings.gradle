@@ -12,8 +12,8 @@ publishing {
             name project.name
             url maven_github_repo + project.name
             credentials {
-                username System.getProperty('repo.username')
-                password System.getProperty('repo.password')
+                username System.getProperty('GITHUB_USERNAME')
+                password System.getProperty('GITHUB_TOKEN')
             }
         }
     }
