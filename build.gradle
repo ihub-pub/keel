@@ -5,6 +5,7 @@ apply {
 }
 
 group group_id
+println System.getProperty('ref')
 version System.getProperty('ref').with { !it || 'main' == it ? 'dev' : it }
 
 repositories {
