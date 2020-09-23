@@ -17,7 +17,7 @@ jobs:
     - name: Publish Snapshot to GitHub Packages
       run: ./gradlew publish
       env:
-        version: ${{ secrets.PROJECT_VERSION + '-SNAPSHOT' }}
-        github:
-          username: ${{ github.actor }}
-          token: ${{ secrets.PUBLISH_TOKEN }}
+        IS_SNAPSHOT: true
+        VERSION: ${{ secrets.PROJECT_VERSION }}
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
