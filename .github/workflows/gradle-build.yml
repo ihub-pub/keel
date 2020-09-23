@@ -14,5 +14,5 @@ jobs:
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Publish Snapshot to GitHub Packages
+    - name: Publish to GitHub Packages
       run: ./gradlew -Dref=${{ github.ref }} -Dgithub.username=${{ github.actor }} -Dgithub.token=${{ secrets.PUBLISH_TOKEN }} publish
