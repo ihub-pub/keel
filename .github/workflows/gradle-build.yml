@@ -15,4 +15,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Publish Snapshot to GitHub Packages
-      run: ./gradlew -DVERSION=${{ secrets.PROJECT_VERSION }} -DGITHUB_USERNAME=${{ github.actor }} -DGITHUB_TOKEN=${{ secrets.PUBLISH_TOKEN }} -DIS_SNAPSHOT=true publish
+      env:
+        REF: ${{ github.ref }}
+        OWNER: ${{ github.repository_owner }}
+        USERNAME: ${{ github.actor }}
+        TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+      run: ./gradlew -Dref=$REF -Downer=$OWNER -Dgithub.username=$USERNAME -Dgithub.token=$TOKEN publish
