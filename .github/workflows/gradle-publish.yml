@@ -1,0 +1,12 @@
+name: Gradle Publish
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    - name: Publish to GitHub Packages
+      run: ./gradlew -DVERSION=${{ secrets.PROJECT_VERSION }} -DGITHUB_USERNAME=${{ github.actor }} -DGITHUB_TOKEN=${{ secrets.PUBLISH_TOKEN }} publish
