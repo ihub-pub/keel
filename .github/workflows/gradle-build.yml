@@ -10,5 +10,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.7
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew build
