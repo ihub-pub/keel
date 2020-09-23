@@ -6,7 +6,7 @@ apply {
 
 group group_id
 version System.getProperty('VERSION')
-        ?.with { Boolean.valueOf(System.getProperty('IS_SNAPSHOT')) ? it - '-SNAPSHOT' : it } ?: 'dev'
+        ?.with { Boolean.valueOf(System.getProperty('IS_SNAPSHOT')) ? it + '-SNAPSHOT' : it } ?: 'dev'
 
 repositories {
     maven { url maven_public_repo_mirror_aliyun }
