@@ -1,7 +1,6 @@
 *.class
 *.log*
 .gradle/
-.github/
 build/
 
 # IntelliJ IDEA
