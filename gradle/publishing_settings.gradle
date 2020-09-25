@@ -2,7 +2,7 @@ apply {
     plugin 'maven-publish'
 }
 
-version getSystemProperty('ref').with { !it || it.endsWith('main') ? 'SNAPSHOT' : it.replaceAll(/.*\//, '') }
+version getSystemProperty('ref').with { !it || it.endsWith('main') ? 'dev-SNAPSHOT' : it.replaceAll(/.*\//, '') }
 
 java {
     if (Boolean.valueOf(getSystemProperty('ihub.build.publish-with-javadoc-jar'))) {
