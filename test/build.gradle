@@ -1,0 +1,7 @@
+description = 'DSL测试组件'
+
+dependencies {
+
+    implementation "org.spockframework:spock-spring:$spock_framework_version"
+
+}

@@ -1,0 +1,11 @@
+description = '基于上下文的DSL组件'
+
+apply {
+    from rootProject.file('gradle/publishing_settings.gradle')
+}
+
+dependencies {
+    implementation project(':dsl')
+
+    testImplementation project(':test')
+}

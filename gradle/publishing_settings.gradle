@@ -2,7 +2,12 @@ apply {
     plugin 'maven-publish'
 }
 
+version getSystemProperty('ref').with { !it || it.endsWith('main') ? 'SNAPSHOT' : it.replaceAll(/.*\//, '') }
+
 java {
+    if (Boolean.valueOf(getSystemProperty('ihub.build.publish-with-javadoc-jar'))) {
+        withJavadocJar()
+    }
     withSourcesJar()
 }
 
@@ -12,13 +17,15 @@ publishing {
             name project.name
             url maven_github_repo + project.name
             credentials {
-                username System.getProperty('github.username')
-                password System.getProperty('github.token')
+                username getSystemProperty('github.username')
+                password getSystemProperty('github.token')
             }
         }
     }
     publications {
         mavenJava(MavenPublication) {
+            groupId group_id
+            artifactId project.name
             from components.java
         }
     }

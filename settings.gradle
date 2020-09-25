@@ -1,2 +1,23 @@
-rootProject.name = 'keel'
+/**
+ +---------------------+
+ | Gradle Plugin Repos |
+ +---------------------+
+ */
+//pluginManagement {
+//    repositories {
+//        flatDir dirs: "$rootProject.projectDir/gradle/plugins"
+//        maven { url gradle_plugin_repo_mirror_aliyun }
+//        maven { url maven_central_repo_mirror_aliyun }
+//        gradlePluginPortal()
+//        mavenCentral()
+//        jcenter()
+//        maven { url spring_plugin_repo_release }
+//    }
+//}
 
+rootProject.name = project_name
+
+['dsl', 'context', 'test'].each {
+    include ":$it"
+    project(":$it").projectDir = new File(rootDir, it)
+}

@@ -15,6 +15,8 @@ codenarc {
 
 dependencies {
 
+    // Spring Framework
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$spring_boot_starter_version"
     // Spock Framework
     testImplementation "org.spockframework:spock-spring:$spock_framework_version"
     // Spock Reports

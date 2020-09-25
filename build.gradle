@@ -1,23 +1,39 @@
-apply {
-    plugin 'groovy'
-    from rootProject.file('gradle/verification_settings.gradle')
-    from rootProject.file('gradle/publishing_settings.gradle')
+/**
+ +---------+
+ | Plugins |
+ +---------+
+ */
+//plugins {
+//    id 'com.github.ben-manes.versions'      version "$uptodate_version"
+//    id 'com.palantir.git-version'           version "$palantir_gitversion_version"
+//    id 'io.freefair.lombok'                 version "$freefair_lombok_version"
+//    id 'io.spring.dependency-management'    version "$spring_io_dep_version"
+//    id 'org.springframework.boot'           version "$spring_boot_starter_version"
+//}
+
+ext.getSystemProperty = { String name ->
+    System.getProperty(name) ?: System.getenv(name.replaceAll(/\.|-/, '_').toUpperCase())
 }
 
-group group_id
-version System.getProperty('ref').with { !it || it.endsWith('main') ? 'dev' : it.replaceAll(/.*\//, '') }
+/**
+ +----------------+
+ | Build Settings |
+ +----------------+
+ */
+subprojects {
+    apply {
+//        from rootProject.file('gradle/default_plugins.gradle')
+//        from rootProject.file('gradle/default_deps.gradle')
+        from rootProject.file('gradle/groovy_essential_deps.gradle')
+        from rootProject.file('gradle/verification_settings.gradle')
+    }
 
-repositories {
-    maven { url maven_public_repo_mirror_aliyun }
-}
+    repositories {
+        maven { url maven_central_repo_mirror_aliyun }
+    }
 
-dependencies {
-    implementation "org.codehaus.groovy:groovy:$groovy_version",
-            "org.codehaus.groovy:groovy-cli-commons:$groovy_version",
-            "org.codehaus.groovy:groovy-nio:$groovy_version",
-            "org.codehaus.groovy:groovy-templates:$groovy_version",
-            "org.slf4j:slf4j-api:$slf4j_version"
+    dependencies {
+        implementation "org.slf4j:slf4j-api:$slf4j_version"
+    }
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:$spring_boot_starter_version",
-            "org.spockframework:spock-spring:$spock_framework_version"
 }

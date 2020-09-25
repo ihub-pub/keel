@@ -1,0 +1,9 @@
+description = 'DSL核心组件'
+
+apply {
+    from rootProject.file('gradle/publishing_settings.gradle')
+}
+
+dependencies {
+    testImplementation project(':test')
+}

@@ -1,0 +1,29 @@
+/**
+ +---------+
+ | Plugins |
+ +---------+
+ */
+apply {
+    from rootProject.file('gradle/groovy_essential_deps.gradle')
+}
+
+/**
+ +----------------+
+ | Build Settings |
+ +----------------+
+ */
+dependencies {
+    implementation  "org.codehaus.groovy:groovy-ant:$groovy_version",
+                    "org.codehaus.groovy:groovy-cli-picocli:$groovy_version",
+                    "org.codehaus.groovy:groovy-console:$groovy_version",
+                    "org.codehaus.groovy:groovy-docgenerator:$groovy_version",
+                    "org.codehaus.groovy:groovy-groovydoc:$groovy_version",
+                    "org.codehaus.groovy:groovy-groovysh:$groovy_version",
+                    "org.codehaus.groovy:groovy-jsr223:$groovy_version",
+                    "org.codehaus.groovy:groovy-macro:$groovy_version",
+                    "org.codehaus.groovy:groovy-servlet:$groovy_version",
+                    "org.codehaus.groovy:groovy-swing:$groovy_version",
+                    "org.codehaus.groovy:groovy-test:$groovy_version",
+                    "org.codehaus.groovy:groovy-test-junit5:$groovy_version",
+                    "org.codehaus.groovy:groovy-testng:$groovy_version"
+}
