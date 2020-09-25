@@ -15,4 +15,8 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Publish to GitHub Packages
-      run: ./gradlew -Dref=${{ github.ref }} -Dgithub.username=${{ github.actor }} -Dgithub.token=${{ secrets.PUBLISH_TOKEN }} publish
+      run: ./gradlew publish
+      env:
+        REF: ${{ github.ref }}
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
