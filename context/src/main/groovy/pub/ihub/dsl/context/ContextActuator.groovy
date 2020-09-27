@@ -55,11 +55,13 @@ class ContextActuator extends DSLActuator {
         NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.set bindings
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     def propertyMissing(String name) {
         NAME_BINDINGS_MAPPINGS_THREAD_LOCAL.get()?.get(name)?.tap {
             log.trace '获取 <<<绑定属性<<< {} <- {}', name, it
-        } ?: super.propertyMissing(name)
-//        config.getMissProperty name, this
+        } ?: super.propertyMissing(name).with {
+            it instanceof Class<IStep> ? it.getDeclaredConstructor().newInstance() : it
+        }
     }
 
 }

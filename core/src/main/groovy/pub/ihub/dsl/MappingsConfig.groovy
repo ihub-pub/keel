@@ -38,13 +38,10 @@ class MappingsConfig {
      * base_config为全局公共配置，文件名base_config.dsl，路径在resources根目录下
      * @param scriptLocation 配置脚本URL
      */
-    @SuppressWarnings('UnnecessaryGetter')
     MappingsConfig(URL scriptLocation) {
         def config = parse(getClass().classLoader.getResource('base_config.dsl'))
                 .with { scriptLocation ? merge(parse(scriptLocation)) : it }
-        nameClassMappings.putAll config.nameClassMappings.collectEntries { key, value ->
-            [(key): value instanceof Class ? value.getDeclaredConstructor().newInstance() : value]
-        } as Map<String, Object>
+        nameClassMappings.putAll config.nameClassMappings as Map<String, Object>
         nameFlowMappings.putAll config.nameFlowMappings as Map<String, Closure>
         flows.putAll config.flows as Map<String, Closure>
     }

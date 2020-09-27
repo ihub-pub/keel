@@ -1,6 +1,6 @@
 repositories {
     flatDir  dirs: "$rootProject.projectDir/libs"
-    if (Boolean.valueOf(getSystemProperty('ihub.build.maven-local-first'))) {
+    if (Boolean.valueOf(getSystemProperty('ihub.build.local'))) {
         mavenLocal()
     }
 //    exclusiveContent {
