@@ -2,6 +2,14 @@ description = 'DSL测试组件'
 
 dependencies {
 
-    implementation "org.spockframework:spock-spring:$spock_framework_version"
+    // Spring Framework
+    api "org.springframework.boot:spring-boot-starter-test:$spring_boot_starter_version"
+    // Spock Framework
+    api "org.spockframework:spock-spring:$spock_framework_version"
+    // Spock Reports
+    testRuntimeOnly("com.athaydes:spock-reports:$spock_reports_version") {
+        transitive = false
+    }
+
 
 }

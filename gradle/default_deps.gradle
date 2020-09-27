@@ -3,19 +3,19 @@ repositories {
     if (Boolean.valueOf(getSystemProperty('ihub.build.maven-local-first'))) {
         mavenLocal()
     }
+//    exclusiveContent {
+//        forRepositories(
+//            maven  {
+//                url maven_ihub_repo
+//                allowInsecureProtocol true
+//            }
+//        )
+//        filter {
+//            includeGroupByRegex 'pub\\.ihub\\..*'
+//        }
+//    }
+//    maven { url maven_github_repo }
     maven { url maven_central_repo_mirror_aliyun }
-    maven { url maven_github_repo }
-    exclusiveContent {
-        forRepositories(
-            maven  {
-                url maven_ihub_repo
-                allowInsecureProtocol true
-            }
-        )
-        filter {
-            includeGroupByRegex 'pub\\.ihub\\..*'
-        }
-    }
     mavenCentral()
     jcenter()
 }
@@ -39,4 +39,10 @@ configurations {
             cacheChangingModulesFor 0, 'seconds'
         }
     }
+}
+
+dependencies {
+    runtimeOnly     "org.slf4j:jul-to-slf4j:$slf4j_version",
+                    "org.slf4j:jcl-over-slf4j:$slf4j_version",
+                    "org.slf4j:log4j-over-slf4j:$slf4j_version"
 }

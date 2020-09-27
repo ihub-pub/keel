@@ -22,21 +22,14 @@ ext.getSystemProperty = { String name ->
  */
 subprojects {
     apply {
-//        from rootProject.file('gradle/default_plugins.gradle')
-//        from rootProject.file('gradle/default_deps.gradle')
+        from rootProject.file('gradle/default_plugins.gradle')
+        from rootProject.file('gradle/default_deps.gradle')
         from rootProject.file('gradle/groovy_essential_deps.gradle')
         from rootProject.file('gradle/verification_settings.gradle')
     }
 
-    repositories {
-        maven { url maven_central_repo_mirror_aliyun }
-    }
-
     dependencies {
         implementation  "org.slf4j:slf4j-api:$slf4j_version"
-        runtimeOnly     "org.slf4j:jul-to-slf4j:$slf4j_version",
-                        "org.slf4j:jcl-over-slf4j:$slf4j_version",
-                        "org.slf4j:log4j-over-slf4j:$slf4j_version"
     }
 
 }
