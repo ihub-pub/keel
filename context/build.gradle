@@ -5,7 +5,7 @@ apply {
 }
 
 dependencies {
-    implementation project(':dsl')
+    implementation project(':core')
 
     testImplementation project(':test')
 }

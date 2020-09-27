@@ -17,7 +17,4 @@
 
 rootProject.name = project_name
 
-['dsl', 'context', 'test'].each {
-    include ":$it"
-    project(":$it").projectDir = new File(rootDir, it)
-}
+include 'core', 'context', 'test'
