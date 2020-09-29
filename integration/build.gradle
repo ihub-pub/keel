@@ -7,6 +7,8 @@ apply {
 dependencies {
     implementation      project(':core')
 
+    implementation      "javax.annotation:javax.annotation-api:$javax_annotation_version"
+
 //    implementation      "org.springframework:spring-webmvc:$spring_version"
     implementation      "org.springframework.integration:spring-integration-core:$spring_integration_version"
 //                        "org.springframework.integration:spring-integration-groovy:$spring_integration_version"
