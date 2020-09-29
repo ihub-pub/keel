@@ -1,12 +1,15 @@
 ruleset {
     description '全局默认CodeNarc规则集'
 
-    ruleset('rulesets/basic.xml')
+    ruleset('rulesets/basic.xml') {
+        'EmptyClass' priority: 4 // TODO 暂时关闭
+    }
     ruleset('rulesets/braces.xml')
     ruleset('rulesets/comments.xml')
     ruleset('rulesets/concurrency.xml')
     ruleset('rulesets/design.xml') {
         'Instanceof' priority: 4
+        'PrivateFieldCouldBeFinal' priority: 4 // TODO 暂时关闭
     }
     ruleset('rulesets/dry.xml') {
         'DuplicateMapLiteral' priority: 4, doNotApplyToFilesMatching: /.*(FT|IT|UT|Test)_?\d*\.groovy/
@@ -15,21 +18,26 @@ ruleset {
     }
     ruleset('rulesets/exceptions.xml')
     ruleset('rulesets/formatting.xml') {
-        'LineLength' ignoreLineRegex: /.*'.*'.*|.*".*".*|.*测试.*/
+        'LineLength' ignoreLineRegex: /.*'.*'.*|.*".*".*|.*测试.*|class .*/
         'ConsecutiveBlankLines' enabled: false
         'SpaceAroundMapEntryColon' characterBeforeColonRegex: /\s|\w|\)|'|"|[\u4e00-\u9fa5]/, characterAfterColonRegex: /\s/
+        'Indentation' priority: 4 // TODO 暂时关闭
     }
     ruleset('rulesets/generic.xml')
     ruleset('rulesets/groovyism.xml')
     ruleset('rulesets/imports.xml') {
         'MisorderedStaticImports' comesBefore: false
     }
-    ruleset('rulesets/junit.xml')
+    ruleset('rulesets/junit.xml') {
+        'JUnitPublicProperty' priority: 4 // TODO 暂时关闭
+        'JUnitPublicNonTestMethod' priority: 4 // TODO 暂时关闭
+    }
     ruleset('rulesets/logging.xml')
     ruleset('rulesets/naming.xml') {
         'FieldName' staticFinalRegex: '[A-Z][A-Z0-9_]*', staticRegex: '[a-z][a-zA-Z0-9_]*', ignoreFieldNames: 'serialVersionUID'
         'MethodName' ignoreMethodNames: '*测试*,*test*'
         'PropertyName' staticFinalRegex: '[A-Z][A-Z0-9_]*', staticRegex: '[a-z][a-zA-Z0-9_]*'
+        'FactoryMethodName' priority: 4 // TODO 暂时关闭
     }
     ruleset('rulesets/security.xml')
     ruleset('rulesets/serialization.xml')

@@ -88,6 +88,10 @@ class MappingsConfig {
         }
     }
 
+    Set<String> getFlowNames() {
+        flows.keySet()
+    }
+
     def getMissProperty(String name, delegate) {
         nameClassMappings[name]?.tap {
             log.trace '获取 <<<步骤/属性<<< {} <- {}', name, it

@@ -17,4 +17,4 @@
 
 rootProject.name = project_name
 
-include 'core', 'context', 'test'
+include 'core', 'context', 'integration', 'test'

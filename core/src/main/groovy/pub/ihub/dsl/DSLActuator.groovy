@@ -21,8 +21,9 @@ class DSLActuator {
         config = new MappingsConfig(scriptLocation as URL)
     }
 
-    DSLActuator(Map<String, Object> nameClassMappings, Map<String, Closure> nameFlowMappings) {
-        config = new MappingsConfig(nameClassMappings, nameFlowMappings)
+    DSLActuator(Map<String, Object> nameClassMappings, Map<String, Closure> nameFlowMappings,
+                Map<String, Closure> flows = [:]) {
+        config = new MappingsConfig(nameClassMappings, nameFlowMappings, flows)
     }
 
     static DSLActuator getThreadLocalActuator() {

@@ -8,10 +8,9 @@ import spock.lang.Unroll
 
 
 /**
- * TODO 测试用例整理
  * @author liheng
  */
-@Title('测试套件')
+@Title('GroovyShell DSL执行器测试套件')
 @Slf4j
 class ShellActuatorUT extends ATestActuatorUT {
 
