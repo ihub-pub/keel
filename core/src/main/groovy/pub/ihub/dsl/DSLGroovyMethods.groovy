@@ -1,5 +1,6 @@
 package pub.ihub.dsl
 
+import groovy.transform.CompileStatic
 
 import static DSLActuator.threadLocalActuator
 
@@ -10,6 +11,7 @@ import static DSLActuator.threadLocalActuator
  * 主要用于处理流程执行期间方法丢失
  * @author liheng
  */
+@CompileStatic
 class DSLGroovyMethods {
 
     static methodMissing(DSLActuator self, String name, args) {

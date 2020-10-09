@@ -1,5 +1,6 @@
 package pub.ihub.dsl.context
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import static pub.ihub.dsl.context.ContextActuator.nameBindingsMappings
@@ -15,6 +16,7 @@ import static pub.ihub.dsl.context.Context.context
  * 2、绑定流程模板运行时变量（步骤/属性/子流程）映射
  * @author liheng
  */
+@CompileStatic
 @Slf4j
 class ContextGroovyMethods {
 
