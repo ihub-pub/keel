@@ -1,5 +1,6 @@
 package pub.ihub.dsl.integration.endpoint
 
+import groovy.transform.CompileStatic
 import org.springframework.integration.dsl.GenericEndpointSpec
 import org.springframework.integration.dsl.MessageProcessorSpec
 import org.springframework.integration.transformer.GenericTransformer
@@ -22,6 +23,7 @@ import java.util.function.Consumer
  * @param <T> the target type - 'transform to'.
  * @author liheng
  */
+@CompileStatic
 class TransformerSpec<S, T> extends AEndpointSpec<S, GenericTransformer<S, T>, GenericEndpointSpec<MessageTransformingHandler>> {
 
     String builderMethodName = 'transform'

@@ -1,6 +1,6 @@
 package pub.ihub.dsl.integration.endpoint
 
-
+import groovy.transform.CompileStatic
 import org.springframework.integration.dsl.IntegrationFlowBuilder
 import org.springframework.integration.dsl.MessageProcessorSpec
 import org.springframework.integration.dsl.SplitterEndpointSpec
@@ -13,6 +13,8 @@ import pub.ihub.dsl.integration.AEndpointSpec
 import java.util.function.Consumer
 import java.util.function.Function
 
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.SPLITTER
+
 
 
 /**
@@ -21,17 +23,22 @@ import java.util.function.Function
  * @param <P> the expected {@code payload} type.
  * @author liheng
  */
+@CompileStatic
 class SplitterSpec<P> extends AEndpointSpec<P, Function<P, ?>, SplitterEndpointSpec> {
 
     String builderMethodName = 'split'
     private AbstractMessageSplitter splitter
 
-    SplitterSpec(Consumer<SplitterEndpointSpec<DefaultMessageSplitter>> endpointConfigurer = null) {
-        this.endpointConfigurer = endpointConfigurer
+    SplitterSpec() {
+    }
+
+    SplitterSpec(Consumer<SplitterEndpointSpec<DefaultMessageSplitter>> endpointConfigurer) {
+        super(endpointConfigurer)
     }
 
     SplitterSpec(AbstractMessageSplitter splitter,
                  Consumer<SplitterEndpointSpec<? extends AbstractMessageSplitter>> endpointConfigurer = null) {
+        super(SPLITTER)
         this.splitter = splitter
         this.endpointConfigurer = endpointConfigurer
     }
@@ -65,9 +72,14 @@ class SplitterSpec<P> extends AEndpointSpec<P, Function<P, ?>, SplitterEndpointS
         super(processorSpec, endpointConfigurer)
     }
 
-    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        (super << builder) ?: splitter ? builder.split(splitter, endpointConfigurer) :
-                endpointConfigurer ? builder.split(endpointConfigurer) : builder.split()
+    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
+            (SPLITTER): { IntegrationFlowBuilder builder ->
+                builder.split splitter, endpointConfigurer
+            }
+    ]
+
+    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
+        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
     }
 
 }

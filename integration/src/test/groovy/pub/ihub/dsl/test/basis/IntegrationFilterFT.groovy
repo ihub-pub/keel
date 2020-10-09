@@ -17,11 +17,10 @@ import spock.lang.Unroll
 @Title('测试套件')
 @Slf4j
 @ServiceFTConfig
-@SuppressWarnings('Println')
-class IntegrationHandleUT extends Specification {
+class IntegrationFilterFT extends Specification {
 
     @Autowired
-    private DirectChannel test1
+    private DirectChannel test4
 
     /**
      * 用例01
@@ -29,17 +28,11 @@ class IntegrationHandleUT extends Specification {
     @Unroll
     '单元测试：测试DSL配置内置流程'() {
         given: '初始化参数'
-//        def ac = actuator
-        println '123'
 
         when: '执行内置流程'
-//        def result = ac 'flow_demo'
-        test1.send(new GenericMessage<String>('147'))
-        println '456'
+        test4.send new GenericMessage<String>('text')
 
         then: '校验期望结果'
-//        result == 'p1-p2-p3'
-        println '789'
         true
     }
 

@@ -11,6 +11,10 @@ import pub.ihub.dsl.integration.AEndpointSpec
 
 import java.util.function.Consumer
 
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.GENERIC_HANDLER
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.HANDLER
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.HANDLER_SPEC
+
 
 
 /**
@@ -19,27 +23,31 @@ import java.util.function.Consumer
  * @param <P> the expected {@code payload} type.
  * @author liheng
  */
+// TODO static
 class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpointSpec<MessageHandler>> {
 
     String builderMethodName = 'handle'
     private MessageHandler handler
-    private GenericHandler<P> genericHandler
+    GenericHandler<P> genericHandler
     private MessageHandlerSpec messageHandlerSpec
 
     HandlerSpec(MessageHandler handler,
                 Consumer<GenericEndpointSpec<? extends MessageHandler>> endpointConfigurer = null) {
+        super(HANDLER)
         this.handler = handler
         this.endpointConfigurer = endpointConfigurer
     }
 
     HandlerSpec(GenericHandler<P> handler,
                 Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
+        super(GENERIC_HANDLER)
         genericHandler = handler
-        super.endpointConfigurer = endpointConfigurer
+        this.endpointConfigurer = endpointConfigurer
     }
 
     HandlerSpec(MessageHandlerSpec<? extends MessageHandlerSpec, ? extends MessageHandler> messageHandlerSpec,
                 Consumer<GenericEndpointSpec<? extends MessageHandler>> endpointConfigurer = null) {
+        super(HANDLER_SPEC)
         this.messageHandlerSpec = messageHandlerSpec
         this.endpointConfigurer = endpointConfigurer
     }
@@ -64,10 +72,20 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
         super(processorSpec, endpointConfigurer)
     }
 
-    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        (super << builder) ?: handler ? builder.handle(handler, endpointConfigurer) :
-                genericHandler ? builder.handle(genericHandler, endpointConfigurer) :
-                        messageHandlerSpec ? builder.handle(messageHandlerSpec, endpointConfigurer) : null
+    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
+            (HANDLER)        : { IntegrationFlowBuilder builder ->
+                builder.handle handler, endpointConfigurer
+            },
+            (GENERIC_HANDLER): { IntegrationFlowBuilder builder ->
+                builder.handle genericHandler, endpointConfigurer
+            },
+            (HANDLER_SPEC)   : { IntegrationFlowBuilder builder ->
+                builder.handle messageHandlerSpec, endpointConfigurer
+            }
+    ]
+
+    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
+        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
     }
 
 }

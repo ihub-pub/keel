@@ -1,5 +1,6 @@
 package pub.ihub.dsl.integration
 
+import groovy.transform.CompileStatic
 import org.springframework.expression.Expression
 import org.springframework.integration.core.GenericSelector
 import org.springframework.integration.dsl.AggregatorSpec as AggregatorEndpointSpec
@@ -43,6 +44,7 @@ import static org.springframework.integration.handler.LoggingHandler.Level.INFO
 /**
  * @author liheng
  */
+@CompileStatic
 @SuppressWarnings('MethodCount')
 final class MessageEndpoints {
 

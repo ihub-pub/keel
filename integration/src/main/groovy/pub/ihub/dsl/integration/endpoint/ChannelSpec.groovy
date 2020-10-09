@@ -1,5 +1,9 @@
 package pub.ihub.dsl.integration.endpoint
 
+import groovy.transform.CompileStatic
+
+
+
 /**
  * out channel TODO
  *
@@ -9,6 +13,7 @@ package pub.ihub.dsl.integration.endpoint
  *
  * @author liheng
  */
+@CompileStatic
 class ChannelSpec {
 
 }

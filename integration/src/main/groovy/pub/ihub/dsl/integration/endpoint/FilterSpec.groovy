@@ -1,5 +1,6 @@
 package pub.ihub.dsl.integration.endpoint
 
+import groovy.transform.CompileStatic
 import org.springframework.integration.core.GenericSelector
 import org.springframework.integration.dsl.FilterEndpointSpec
 import org.springframework.integration.dsl.IntegrationFlowBuilder
@@ -7,6 +8,8 @@ import org.springframework.integration.dsl.MessageProcessorSpec
 import pub.ihub.dsl.integration.AEndpointSpec
 
 import java.util.function.Consumer
+
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.SELECTOR
 
 
 
@@ -18,12 +21,14 @@ import java.util.function.Consumer
  * @param <S> the source type to accept.
  * @author liheng
  */
+@CompileStatic
 class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointSpec> {
 
     String builderMethodName = 'filter'
     private GenericSelector<P> genericSelector
 
     FilterSpec(GenericSelector<P> genericSelector, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
+        super(SELECTOR)
         this.genericSelector = genericSelector
         this.endpointConfigurer = endpointConfigurer
     }
@@ -45,8 +50,14 @@ class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointS
         super(processorSpec, endpointConfigurer)
     }
 
-    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        (super << builder) ?: genericSelector ? builder.filter(genericSelector, endpointConfigurer) : null
+    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
+            (SELECTOR): { IntegrationFlowBuilder builder ->
+                builder.filter genericSelector, endpointConfigurer
+            }
+    ]
+
+    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
+        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
     }
 
 }

@@ -1,5 +1,6 @@
 package pub.ihub.dsl.integration.config
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -19,6 +20,7 @@ import static org.springframework.integration.dsl.IntegrationFlows.from
  * 消息配置
  * @author liheng
  */
+@CompileStatic
 @Slf4j
 @Configuration
 @EnableIntegration

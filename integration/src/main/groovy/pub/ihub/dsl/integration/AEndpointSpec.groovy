@@ -6,121 +6,157 @@ import org.springframework.integration.dsl.MessageProcessorSpec
 import java.util.function.Consumer
 
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.BEAN_NAME
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.CONFIGURER
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.EXPRESSION
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.FUNCTION
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.NO_PARAMETERS
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.OBJECT
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.PROCESSOR_SPEC
-import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.SERVICE
 
 
 
 /**
  * @author liheng
  */
+// TODO static
 abstract class AEndpointSpec<P, F, T> {
 
     protected String expression
     protected Class<P> payloadType
     protected String beanName
     protected Object service
-    protected Class serviceType
     protected String methodName
     protected F function
     protected MessageProcessorSpec processorSpec
     protected Consumer<T> endpointConfigurer
-    private final ConstructorArgumentType argumentType
+    protected ConstructorArgumentType argumentType
+
+    protected AEndpointSpec(ConstructorArgumentType argumentType) {
+        this.argumentType = argumentType
+    }
 
     protected AEndpointSpec() {
-        argumentType = null
+        this(NO_PARAMETERS)
     }
 
-    protected AEndpointSpec(String expression, Consumer<T> endpointConfigurer = null) {
+    protected AEndpointSpec(Consumer<T> endpointConfigurer) {
+        this(CONFIGURER)
+        this.endpointConfigurer = endpointConfigurer
+    }
+
+    protected AEndpointSpec(String expression, Consumer<T> endpointConfigurer) {
+        this(EXPRESSION)
         this.expression = expression
         this.endpointConfigurer = endpointConfigurer
-        argumentType = EXPRESSION
     }
 
-    protected AEndpointSpec(String beanName, String methodName, Consumer<T> endpointConfigurer = null) {
+    protected AEndpointSpec(String beanName, String methodName, Consumer<T> endpointConfigurer) {
+        this(BEAN_NAME)
         this.beanName = beanName
         this.methodName = methodName
         this.endpointConfigurer = endpointConfigurer
-        argumentType = BEAN_NAME
     }
 
-    protected AEndpointSpec(Object service, String methodName = null, Consumer<T> endpointConfigurer = null) {
+    // TODO 确认 methodName = null
+    protected AEndpointSpec(Object service, String methodName, Consumer<T> endpointConfigurer) {
+        this(OBJECT)
         this.service = service
         this.methodName = methodName
         this.endpointConfigurer = endpointConfigurer
-        argumentType = OBJECT
     }
 
-    // TODO 同service
-    protected AEndpointSpec(Class serviceType, String methodName, Consumer<T> endpointConfigurer = null) {
-        this.serviceType = serviceType
-        this.methodName = methodName
-        this.endpointConfigurer = methodName ? endpointConfigurer : null
-        argumentType = SERVICE
-    }
-
-    protected AEndpointSpec(Class<P> payloadType, F function, Consumer<T> endpointConfigurer = null) {
+    protected AEndpointSpec(Class<P> payloadType, F function, Consumer<T> endpointConfigurer) {
+        this(FUNCTION)
         this.payloadType = payloadType
         this.function = function
         this.endpointConfigurer = endpointConfigurer
-        argumentType = FUNCTION
     }
 
-    protected AEndpointSpec(MessageProcessorSpec processorSpec, Consumer<T> endpointConfigurer = null) {
+    protected AEndpointSpec(MessageProcessorSpec processorSpec, Consumer<T> endpointConfigurer) {
+        this(PROCESSOR_SPEC)
         this.processorSpec = processorSpec
         this.endpointConfigurer = endpointConfigurer
-        argumentType = PROCESSOR_SPEC
-    }
-
-    protected IntegrationFlowBuilder buildWithExpression(IntegrationFlowBuilder builder) {
-        builder."$builderMethodName" expression, endpointConfigurer
-    }
-
-    protected IntegrationFlowBuilder buildWithBeanName(IntegrationFlowBuilder builder) {
-        builder."$builderMethodName" beanName, methodName, endpointConfigurer
-    }
-
-    protected IntegrationFlowBuilder buildWithObject(IntegrationFlowBuilder builder) {
-        builder."$builderMethodName" service, methodName, endpointConfigurer
-    }
-
-    protected IntegrationFlowBuilder buildWithFunction(IntegrationFlowBuilder builder) {
-        builder."$builderMethodName" payloadType, function, endpointConfigurer
-    }
-
-    protected IntegrationFlowBuilder buildWithProcessorSpec(IntegrationFlowBuilder builder) {
-        builder."$builderMethodName" processorSpec, endpointConfigurer
     }
 
     abstract protected String getBuilderMethodName()
 
-    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        switch (argumentType) {
-            case EXPRESSION:
-                buildWithExpression builder
-                break
-            case BEAN_NAME:
-                buildWithBeanName builder
-                break
-            case OBJECT:
-                buildWithObject builder
-                break
-            case FUNCTION:
-                buildWithFunction builder
-                break
-            case PROCESSOR_SPEC:
-                buildWithProcessorSpec builder
-                break
-            default: null
-        }
+    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
+            (NO_PARAMETERS) : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName"()
+            },
+            (CONFIGURER)    : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" endpointConfigurer
+            },
+            (EXPRESSION)    : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" expression, endpointConfigurer
+            },
+            (BEAN_NAME)     : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" beanName, methodName, endpointConfigurer
+            },
+            (OBJECT)        : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" service, methodName, endpointConfigurer
+            },
+            (FUNCTION)      : { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" payloadType, function, endpointConfigurer
+            },
+            (PROCESSOR_SPEC): { IntegrationFlowBuilder builder ->
+                builder."$builderMethodName" processorSpec, endpointConfigurer
+            }
+    ]
+
+    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
+        flowBuilderHandlerMapping[argumentType]
     }
 
-    private enum ConstructorArgumentType {
+    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
+        integrationFlowBuilderHandler.call builder
+    }
 
-        EXPRESSION, BEAN_NAME, OBJECT, SERVICE, FUNCTION, PROCESSOR_SPEC
+    protected enum ConstructorArgumentType {
+
+        //<editor-fold defaultState="collapsed" desc="Common">
+
+        NO_PARAMETERS,
+        CONFIGURER,
+        EXPRESSION,
+        BEAN_NAME,
+        OBJECT,
+        FUNCTION,
+        PROCESSOR_SPEC,
+
+        //</editor-fold>
+
+        //<editor-fold defaultState="collapsed" desc="Handler">
+
+        HANDLER,
+        GENERIC_HANDLER,
+        HANDLER_SPEC,
+
+        //</editor-fold>
+
+        //<editor-fold defaultState="collapsed" desc="Filter">
+
+        SELECTOR,
+
+        //</editor-fold>
+
+        //<editor-fold defaultState="collapsed" desc="Router">
+
+        ROUTER,
+
+        //</editor-fold>
+
+        //<editor-fold defaultState="collapsed" desc="Splitter">
+
+        SPLITTER,
+
+        //</editor-fold>
+
+        //<editor-fold defaultState="collapsed" desc="Logger">
+
+        EXPRESSION_STR
+
+        //</editor-fold>
 
     }
 

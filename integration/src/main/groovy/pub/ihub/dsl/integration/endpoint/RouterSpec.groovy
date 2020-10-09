@@ -1,5 +1,6 @@
 package pub.ihub.dsl.integration.endpoint
 
+import groovy.transform.CompileStatic
 import org.springframework.integration.dsl.GenericEndpointSpec
 import org.springframework.integration.dsl.IntegrationFlowBuilder
 import org.springframework.integration.dsl.MessageProcessorSpec
@@ -11,6 +12,9 @@ import pub.ihub.dsl.integration.AEndpointSpec
 
 import java.util.function.Consumer
 import java.util.function.Function
+
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.EXPRESSION
+import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.ROUTER
 
 
 
@@ -24,6 +28,7 @@ import java.util.function.Function
  * @param <K> the key type.
  * @author liheng
  */
+@CompileStatic
 class RouterSpec<P, K> extends AEndpointSpec<P, Function<P, K>, RouterEndpointSpec> {
 
     String builderMethodName = 'route'
@@ -33,11 +38,13 @@ class RouterSpec<P, K> extends AEndpointSpec<P, Function<P, K>, RouterEndpointSp
 
     RouterSpec(AbstractMessageRouter router,
                Consumer<GenericEndpointSpec<? extends AbstractMessageRouter>> endpointConfigurer = null) {
+        super(ROUTER)
         this.router = router
         this.endpointConfigurer = endpointConfigurer
     }
 
     RouterSpec(String expression, Consumer<RouterEndpointSpec<K, ExpressionEvaluatingRouter>> routerConfigurer = null) {
+        super(EXPRESSION)
         this.expression = expression
         this.routerConfigurer = routerConfigurer
     }
@@ -62,9 +69,17 @@ class RouterSpec<P, K> extends AEndpointSpec<P, Function<P, K>, RouterEndpointSp
         super(processorSpec, endpointConfigurer)
     }
 
-    IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        (super << builder) ?: router ? builder.route(router, endpointConfigurer) :
-                expression ? builder.route(expression, routerConfigurer) : null
+    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
+            (ROUTER)    : { IntegrationFlowBuilder builder ->
+                builder.route router, endpointConfigurer
+            },
+            (EXPRESSION): { IntegrationFlowBuilder builder ->
+                builder.route expression, routerConfigurer
+            }
+    ]
+
+    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
+        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
     }
 
 }
