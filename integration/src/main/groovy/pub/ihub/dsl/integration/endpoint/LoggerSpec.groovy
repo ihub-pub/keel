@@ -55,20 +55,18 @@ class LoggerSpec<P> extends AEndpointSpec {
         this.function = function
     }
 
-    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
-            (EXPRESSION)    : { IntegrationFlowBuilder builder ->
-                builder.log level, category, logExpression
-            },
-            (EXPRESSION_STR): { IntegrationFlowBuilder builder ->
-                builder.log level, category, logExpressionStr
-            },
-            (FUNCTION)      : { IntegrationFlowBuilder builder ->
-                builder.log level, category, function
-            }
-    ]
-
-    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
-        flowBuilderHandlerMapping[argumentType]
+    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
+        [
+                (EXPRESSION)    : { IntegrationFlowBuilder builder ->
+                    builder.log level, category, logExpression
+                },
+                (EXPRESSION_STR): { IntegrationFlowBuilder builder ->
+                    builder.log level, category, logExpressionStr
+                },
+                (FUNCTION)      : { IntegrationFlowBuilder builder ->
+                    builder.log level, category, function
+                }
+        ]
     }
 
 }

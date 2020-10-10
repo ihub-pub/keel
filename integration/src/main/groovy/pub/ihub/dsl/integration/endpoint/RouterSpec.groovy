@@ -69,17 +69,15 @@ class RouterSpec<P, K> extends AEndpointSpec<P, Function<P, K>, RouterEndpointSp
         super(processorSpec, endpointConfigurer)
     }
 
-    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
-            (ROUTER)    : { IntegrationFlowBuilder builder ->
-                builder.route router, endpointConfigurer
-            },
-            (EXPRESSION): { IntegrationFlowBuilder builder ->
-                builder.route expression, routerConfigurer
-            }
-    ]
-
-    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
-        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
+    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
+        super.flowBuilderHandlerMapping + [
+                (ROUTER)    : { IntegrationFlowBuilder builder ->
+                    builder.route router, endpointConfigurer
+                },
+                (EXPRESSION): { IntegrationFlowBuilder builder ->
+                    builder.route expression, routerConfigurer
+                }
+        ]
     }
 
 }

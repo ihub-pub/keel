@@ -50,14 +50,12 @@ class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointS
         super(processorSpec, endpointConfigurer)
     }
 
-    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
-            (SELECTOR): { IntegrationFlowBuilder builder ->
-                builder.filter genericSelector, endpointConfigurer
-            }
-    ]
-
-    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
-        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
+    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
+        super.flowBuilderHandlerMapping + [
+                (SELECTOR): { IntegrationFlowBuilder builder ->
+                    builder.filter genericSelector, endpointConfigurer
+                }
+        ]
     }
 
 }

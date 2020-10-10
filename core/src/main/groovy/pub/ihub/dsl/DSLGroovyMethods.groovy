@@ -12,7 +12,7 @@ import static DSLActuator.threadLocalActuator
  * @author liheng
  */
 @CompileStatic
-class DSLGroovyMethods {
+final class DSLGroovyMethods {
 
     static methodMissing(DSLActuator self, String name, args) {
         self.actuatorMethodMissing name, args

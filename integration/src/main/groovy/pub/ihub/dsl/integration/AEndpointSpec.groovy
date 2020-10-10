@@ -1,10 +1,12 @@
 package pub.ihub.dsl.integration
 
+import groovy.transform.CompileStatic
 import org.springframework.integration.dsl.IntegrationFlowBuilder
 import org.springframework.integration.dsl.MessageProcessorSpec
 
 import java.util.function.Consumer
 
+import static groovy.transform.TypeCheckingMode.SKIP
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.BEAN_NAME
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.CONFIGURER
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.EXPRESSION
@@ -18,7 +20,7 @@ import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.PRO
 /**
  * @author liheng
  */
-// TODO static
+@CompileStatic
 abstract class AEndpointSpec<P, F, T> {
 
     protected String expression
@@ -80,36 +82,35 @@ abstract class AEndpointSpec<P, F, T> {
 
     abstract protected String getBuilderMethodName()
 
-    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
-            (NO_PARAMETERS) : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName"()
-            },
-            (CONFIGURER)    : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" endpointConfigurer
-            },
-            (EXPRESSION)    : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" expression, endpointConfigurer
-            },
-            (BEAN_NAME)     : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" beanName, methodName, endpointConfigurer
-            },
-            (OBJECT)        : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" service, methodName, endpointConfigurer
-            },
-            (FUNCTION)      : { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" payloadType, function, endpointConfigurer
-            },
-            (PROCESSOR_SPEC): { IntegrationFlowBuilder builder ->
-                builder."$builderMethodName" processorSpec, endpointConfigurer
-            }
-    ]
-
-    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
-        flowBuilderHandlerMapping[argumentType]
+    @CompileStatic(SKIP)
+    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
+        [
+                (NO_PARAMETERS) : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName"()
+                },
+                (CONFIGURER)    : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" endpointConfigurer
+                },
+                (EXPRESSION)    : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" expression, endpointConfigurer
+                },
+                (BEAN_NAME)     : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" beanName, methodName, endpointConfigurer
+                },
+                (OBJECT)        : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" service, methodName, endpointConfigurer
+                },
+                (FUNCTION)      : { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" payloadType, function, endpointConfigurer
+                },
+                (PROCESSOR_SPEC): { IntegrationFlowBuilder builder ->
+                    builder."$builderMethodName" processorSpec, endpointConfigurer
+                }
+        ]
     }
 
     IntegrationFlowBuilder leftShift(IntegrationFlowBuilder builder) {
-        integrationFlowBuilderHandler.call builder
+        flowBuilderHandlerMapping[argumentType] builder
     }
 
     protected enum ConstructorArgumentType {

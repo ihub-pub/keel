@@ -72,14 +72,12 @@ class SplitterSpec<P> extends AEndpointSpec<P, Function<P, ?>, SplitterEndpointS
         super(processorSpec, endpointConfigurer)
     }
 
-    private Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> flowBuilderHandlerMapping = [
-            (SPLITTER): { IntegrationFlowBuilder builder ->
-                builder.split splitter, endpointConfigurer
-            }
-    ]
-
-    protected Closure<IntegrationFlowBuilder> getIntegrationFlowBuilderHandler() {
-        flowBuilderHandlerMapping[argumentType] ?: super.integrationFlowBuilderHandler
+    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
+        super.flowBuilderHandlerMapping + [
+                (SPLITTER): { IntegrationFlowBuilder builder ->
+                    builder.split splitter, endpointConfigurer
+                }
+        ]
     }
 
 }

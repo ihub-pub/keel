@@ -18,7 +18,7 @@ import static pub.ihub.dsl.context.Context.context
  */
 @CompileStatic
 @Slf4j
-class ContextGroovyMethods {
+final class ContextGroovyMethods {
 
     static Context rightShift(IStep first, IStep second) {
         context >> first >> second
