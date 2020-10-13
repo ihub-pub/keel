@@ -3,13 +3,10 @@ package pub.ihub.dsl.integration.endpoint
 import groovy.transform.CompileStatic
 import org.springframework.integration.core.GenericSelector
 import org.springframework.integration.dsl.FilterEndpointSpec
-import org.springframework.integration.dsl.IntegrationFlowBuilder
 import org.springframework.integration.dsl.MessageProcessorSpec
 import pub.ihub.dsl.integration.AEndpointSpec
 
 import java.util.function.Consumer
-
-import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.SELECTOR
 
 
 
@@ -25,13 +22,6 @@ import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.SEL
 class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointSpec> {
 
     String builderMethodName = 'filter'
-    private GenericSelector<P> genericSelector
-
-    FilterSpec(GenericSelector<P> genericSelector, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
-        super(SELECTOR)
-        this.genericSelector = genericSelector
-        this.endpointConfigurer = endpointConfigurer
-    }
 
     FilterSpec(String expression, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         super(expression, endpointConfigurer)
@@ -41,21 +31,13 @@ class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointS
         super(service, methodName, endpointConfigurer)
     }
 
-    FilterSpec(Class<P> payloadType, GenericSelector<P> selector,
+    FilterSpec(Class<P> payloadType = null, GenericSelector<P> selector,
                Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         super(payloadType, selector, endpointConfigurer)
     }
 
     FilterSpec(MessageProcessorSpec processorSpec, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         super(processorSpec, endpointConfigurer)
-    }
-
-    protected Map<ConstructorArgumentType, Closure<IntegrationFlowBuilder>> getFlowBuilderHandlerMapping() {
-        super.flowBuilderHandlerMapping + [
-                (SELECTOR): { IntegrationFlowBuilder builder ->
-                    builder.filter genericSelector, endpointConfigurer
-                }
-        ]
     }
 
 }

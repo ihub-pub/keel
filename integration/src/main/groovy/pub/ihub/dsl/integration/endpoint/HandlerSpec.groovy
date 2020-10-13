@@ -13,7 +13,6 @@ import pub.ihub.dsl.integration.AEndpointSpec
 import java.util.function.Consumer
 
 import static groovy.transform.TypeCheckingMode.SKIP
-import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.GENERIC_HANDLER
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.HANDLER
 import static pub.ihub.dsl.integration.AEndpointSpec.ConstructorArgumentType.HANDLER_SPEC
 
@@ -30,7 +29,6 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
 
     String builderMethodName = 'handle'
     private MessageHandler handler
-    // TODO 确认替换？
     private MessageHandlerSpec messageHandlerSpec
 
     HandlerSpec(MessageHandler handler,
@@ -38,12 +36,6 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
         super(HANDLER)
         this.handler = handler
         this.endpointConfigurer = endpointConfigurer
-    }
-
-    HandlerSpec(GenericHandler<P> handler,
-                Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
-        this(null, handler, endpointConfigurer)
-        argumentType = GENERIC_HANDLER
     }
 
     HandlerSpec(MessageHandlerSpec<? extends MessageHandlerSpec, ? extends MessageHandler> messageHandlerSpec,
@@ -63,7 +55,7 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
         super(service, methodName, endpointConfigurer)
     }
 
-    HandlerSpec(Class<P> payloadType, GenericHandler<P> handler,
+    HandlerSpec(Class<P> payloadType = null, GenericHandler<P> handler,
                 Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
         super(payloadType, handler, endpointConfigurer)
     }
@@ -78,9 +70,6 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
         super.flowBuilderHandlerMapping + [
                 (HANDLER)        : { IntegrationFlowBuilder builder ->
                     builder.handle handler, endpointConfigurer
-                },
-                (GENERIC_HANDLER): { IntegrationFlowBuilder builder ->
-                    builder.handle function, endpointConfigurer
                 },
                 (HANDLER_SPEC)   : { IntegrationFlowBuilder builder ->
                     builder.handle messageHandlerSpec, endpointConfigurer

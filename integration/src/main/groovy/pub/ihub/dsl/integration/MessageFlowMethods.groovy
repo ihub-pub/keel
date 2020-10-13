@@ -22,6 +22,7 @@ import org.springframework.messaging.MessageHandler
 import java.util.function.Supplier
 
 import static org.springframework.integration.dsl.IntegrationFlows.from
+import static pub.ihub.dsl.DSLActuator.threadLocalActuator
 
 
 
@@ -98,6 +99,16 @@ class MessageFlowMethods {
 
     //</editor-fold>
 
+    /**
+     * 子流程开启流程
+     * @param first 第一个端点
+     * @param second 第二个端点
+     * @return 消息流程
+     */
+    static IntegrationFlowBuilder rightShift(first, second) {
+        new IntegrationFlowBuilder() >> first >> second
+    }
+
     //</editor-fold>
 
     //<editor-fold defaultState="collapsed" desc="消息端点，注：“>>”符号只支持特有的一个参数，如果需要多个参数可以直接调用原生DSL方法">
@@ -137,13 +148,34 @@ class MessageFlowMethods {
 
     //<editor-fold defaultState="collapsed" desc="路由">
 
+    /**
+     * 默认路由分支标识
+     */
+    static final DEFAULT_ROUTE = 'default'
+
     static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, AbstractMessageRouter router) {
         builder.route router
     }
 
     // TODO 预留Map路由
-    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, Map router) {
-        builder.route router
+    /**
+     * 简单payload type路由
+     * @param builder 构建器
+     * @param subFlows 分支流程
+     * @return 构建器
+     */
+    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, Map<Object, Closure> subFlows) {
+        builder.route 'payload', { spec ->
+            def defaultRoute = subFlows.remove DEFAULT_ROUTE
+            def threadLocalActuator = threadLocalActuator as MessageFlowBuilder
+            spec.resolutionRequired !defaultRoute
+            subFlows.each { key, subFlow ->
+                spec.subFlowMapping key, threadLocalActuator.build(subFlow)
+            }
+            if (defaultRoute) {
+                spec.defaultSubFlowMapping threadLocalActuator.build(defaultRoute)
+            }
+        }
     }
 
     //</editor-fold>

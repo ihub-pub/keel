@@ -13,6 +13,7 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 import static org.springframework.integration.dsl.IntegrationFlows.from as flowsFrom
+import static pub.ihub.dsl.integration.MessageFlowMethods.rightShift
 import static pub.ihub.dsl.integration.config.IntegrationConfig.integrationFlowContext
 
 
@@ -22,7 +23,7 @@ import static pub.ihub.dsl.integration.config.IntegrationConfig.integrationFlowC
  * @author liheng
  */
 @Slf4j
-class MessageFlowBuilder extends DSLActuator {
+class MessageFlowBuilder extends DSLActuator<IntegrationFlowBuilder> {
 
     MessageFlowBuilder(URL scriptLocation = null) {
         super(scriptLocation)
@@ -79,6 +80,13 @@ class MessageFlowBuilder extends DSLActuator {
     }
 
     //</editor-fold>
+
+    protected IntegrationFlowBuilder doCall(Class groovyMethods, Closure flow, ... args) {
+        use(groovyMethods, flow.with { it.rehydrate this, owner, thisObject }).with {
+            // 处理流程只有单个节点的情况
+            it instanceof IntegrationFlowBuilder ? it : rightShift(new IntegrationFlowBuilder(), it)
+        }
+    }
 
     IntegrationFlow build(Closure<IntegrationFlowBuilder> closure) {
         execute(MessageFlowMethods, closure).get()

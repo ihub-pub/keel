@@ -38,7 +38,7 @@ class TransformerSpec<S, T> extends AEndpointSpec<S, GenericTransformer<S, T>, G
         super(service, methodName, endpointConfigurer)
     }
 
-    TransformerSpec(Class<S> payloadType, GenericTransformer<S, T> genericTransformer,
+    TransformerSpec(Class<S> payloadType = null, GenericTransformer<S, T> genericTransformer,
                     Consumer<GenericEndpointSpec<MessageTransformingHandler>> endpointConfigurer = null) {
         super(payloadType, genericTransformer, endpointConfigurer)
     }

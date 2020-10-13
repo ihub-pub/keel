@@ -11,9 +11,9 @@ import static java.lang.System.currentTimeMillis
  * @author liheng
  */
 @Slf4j
-class DSLActuator {
+class DSLActuator<T> {
 
-    private static final ThreadLocal<DSLActuator> ACTUATOR_THREAD_LOCAL = new ThreadLocal<>()
+    private static final ThreadLocal<DSLActuator<T>> ACTUATOR_THREAD_LOCAL = new ThreadLocal<>()
 
     protected MappingsConfig config
 
@@ -30,9 +30,9 @@ class DSLActuator {
         ACTUATOR_THREAD_LOCAL.get()
     }
 
-    protected doCall(Class groovyMethods, Closure flow, ... args) {
-        use(groovyMethods, flow.with { it.rehydrate this, owner, thisObject })
-                .with { it instanceof Closure ? use(groovyMethods, it) : it }
+    protected T doCall(Class groovyMethods, Closure flow, ... args) {
+        def result = use groovyMethods, flow.with { it.rehydrate this, owner, thisObject }
+        result instanceof Closure ? doCall(groovyMethods, result, args) : result as T
     }
 
     /**
@@ -42,7 +42,7 @@ class DSLActuator {
      * @param args 执行参数
      * @return 执行结果
      */
-    protected execute(Class groovyMethods, flow, ... args) {
+    protected T execute(Class groovyMethods, flow, ... args) {
         def beginTime = currentTimeMillis()
         log.debug '开始执行流程 >>>>>>>>>>'
         ACTUATOR_THREAD_LOCAL.set this
@@ -55,11 +55,11 @@ class DSLActuator {
         }
     }
 
-    def call(Class groovyMethods = DSLGroovyMethods, Closure flow) {
+    T call(Class groovyMethods = DSLGroovyMethods, Closure flow) {
         execute groovyMethods, flow
     }
 
-    def call(Class groovyMethods = DSLGroovyMethods, String flow) {
+    T call(Class groovyMethods = DSLGroovyMethods, String flow) {
         call groovyMethods, config.getFlow(flow)
     }
 

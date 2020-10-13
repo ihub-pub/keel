@@ -42,6 +42,7 @@ import static org.springframework.integration.handler.LoggingHandler.Level.INFO
 
 
 /**
+ * // TODO 考虑合并至MessageFlowMethods
  * @author liheng
  */
 @CompileStatic
@@ -53,12 +54,6 @@ final class MessageEndpoints {
     static <H extends MessageHandler> HandlerSpec handle(H handler,
                                                          Consumer<GenericEndpointSpec<H>> endpointConfigurer = null) {
         new HandlerSpec(handler, endpointConfigurer)
-    }
-
-    static <P> HandlerSpec<P> handle(
-            GenericHandler<P> handler,
-            Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
-        new HandlerSpec<P>(handler, endpointConfigurer)
     }
 
     static <H extends MessageHandler> HandlerSpec handle(
@@ -78,7 +73,7 @@ final class MessageEndpoints {
     }
 
     static <P> HandlerSpec<P> handle(
-            Class<P> payloadType, GenericHandler<P> handler,
+            Class<P> payloadType = null, GenericHandler<P> handler,
             Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
         new HandlerSpec<P>(payloadType, handler, endpointConfigurer)
     }
@@ -92,11 +87,6 @@ final class MessageEndpoints {
 
     //<editor-fold defaultState="collapsed" desc="过滤器">
 
-    static <P> FilterSpec<P> filter(GenericSelector<P> genericSelector,
-                                    Consumer<FilterEndpointSpec> endpointConfigurer = null) {
-        new FilterSpec<P>(genericSelector, endpointConfigurer)
-    }
-
     static FilterSpec filter(String expression, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         new FilterSpec(expression, endpointConfigurer)
     }
@@ -106,7 +96,7 @@ final class MessageEndpoints {
         new FilterSpec(service, methodName, endpointConfigurer)
     }
 
-    static <P> FilterSpec<P> filter(Class<P> payloadType, GenericSelector<P> selector,
+    static <P> FilterSpec<P> filter(Class<P> payloadType = null, GenericSelector<P> selector,
                                     Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         new FilterSpec<P>(payloadType, selector, endpointConfigurer)
     }

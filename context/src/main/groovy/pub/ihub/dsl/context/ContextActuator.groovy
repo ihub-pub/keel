@@ -10,7 +10,7 @@ import pub.ihub.dsl.DSLActuator
  * @author liheng
  */
 @Slf4j
-class ContextActuator extends DSLActuator {
+class ContextActuator<T> extends DSLActuator<T> {
 
     /**
      * 运行时步骤/属性/子流程绑定映射（主要用于流程模板变量映射）
@@ -26,7 +26,7 @@ class ContextActuator extends DSLActuator {
     }
 
     @SuppressWarnings('UnnecessaryGetter')
-    protected doCall(Class groovyMethods, Closure flow, ... args) {
+    protected T doCall(Class groovyMethods, Closure flow, ... args) {
         def context = args.first() as Context
         Context.context = context
         // 如果执行结果为IStep或者Closure<RuntimeContext>时需要继续执行该步骤/子流程（流程只有一步的情况）
@@ -34,19 +34,19 @@ class ContextActuator extends DSLActuator {
                 .with { it instanceof IStep || it instanceof Closure<Context> ? context >> it : it }.getPayload()
     }
 
-    def call(Context context, Closure closure) {
+    T call(Context context, Closure closure) {
         execute ContextGroovyMethods, closure, context
     }
 
-    def call(Map context, Closure closure) {
+    T call(Map context, Closure closure) {
         call new Context(context), closure
     }
 
-    def call(Context context, String flow) {
+    T call(Context context, String flow) {
         call context, config.getFlow(flow)
     }
 
-    def call(Map context, String flow) {
+    T call(Map context, String flow) {
         call new Context(context), flow
     }
 

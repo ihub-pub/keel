@@ -101,7 +101,8 @@ abstract class AEndpointSpec<P, F, T> {
                     builder."$builderMethodName" service, methodName, endpointConfigurer
                 },
                 (FUNCTION)      : { IntegrationFlowBuilder builder ->
-                    builder."$builderMethodName" payloadType, function, endpointConfigurer
+                    payloadType ? builder."$builderMethodName"(payloadType, function, endpointConfigurer) :
+                            builder."$builderMethodName"(function, endpointConfigurer)
                 },
                 (PROCESSOR_SPEC): { IntegrationFlowBuilder builder ->
                     builder."$builderMethodName" processorSpec, endpointConfigurer
@@ -130,14 +131,7 @@ abstract class AEndpointSpec<P, F, T> {
         //<editor-fold defaultState="collapsed" desc="Handler">
 
         HANDLER,
-        GENERIC_HANDLER,
         HANDLER_SPEC,
-
-        //</editor-fold>
-
-        //<editor-fold defaultState="collapsed" desc="Filter">
-
-        SELECTOR,
 
         //</editor-fold>
 
