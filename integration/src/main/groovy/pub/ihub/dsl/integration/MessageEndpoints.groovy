@@ -14,6 +14,7 @@ import org.springframework.integration.handler.BridgeHandler
 import org.springframework.integration.handler.GenericHandler
 import org.springframework.integration.handler.LoggingHandler
 import org.springframework.integration.handler.ServiceActivatingHandler
+import org.springframework.integration.router.AbstractMappingMessageRouter
 import org.springframework.integration.router.AbstractMessageRouter
 import org.springframework.integration.router.ExpressionEvaluatingRouter
 import org.springframework.integration.router.MethodInvokingRouter
@@ -37,7 +38,9 @@ import pub.ihub.dsl.integration.endpoint.TransformerSpec
 import java.util.function.Consumer
 import java.util.function.Function
 
+import static groovy.transform.TypeCheckingMode.SKIP
 import static org.springframework.integration.handler.LoggingHandler.Level.INFO
+import static pub.ihub.dsl.DSLActuator.threadLocalActuator
 
 
 
@@ -137,6 +140,34 @@ final class MessageEndpoints {
 
     //<editor-fold defaultState="collapsed" desc="路由">
 
+    /**
+     * 默认路由分支标识
+     */
+    static final DEFAULT_ROUTE = 'default'
+
+    /**
+     * 通过map配置简单路由，推荐在流程中使用Map路由
+     * 如果需要使用默认分支，分支key为default
+     *
+     * @param subFlows 分支流程
+     * @return 路由配置
+     */
+    @CompileStatic(SKIP)
+    static <K, R extends AbstractMappingMessageRouter> Consumer<RouterEndpointSpec<K, R>> routeMapSpec(
+            Class<R> routerType = MethodInvokingRouter, Map<K, Closure> subFlows) {
+        { RouterEndpointSpec<K, R> spec ->
+            def defaultRoute = subFlows.remove DEFAULT_ROUTE
+            def threadLocalActuator = threadLocalActuator as MessageFlowBuilder
+            spec.resolutionRequired !defaultRoute
+            subFlows.each { key, subFlow ->
+                spec.subFlowMapping key, threadLocalActuator.doCall(MessageFlowMethods, subFlow).get()
+            }
+            if (defaultRoute) {
+                spec.defaultSubFlowMapping threadLocalActuator.doCall(MessageFlowMethods, defaultRoute).get()
+            }
+        }
+    }
+
     static <R extends AbstractMessageRouter> RouterSpec route(
             R router, Consumer<GenericEndpointSpec<R>> endpointConfigurer = null) {
         new RouterSpec(router, endpointConfigurer)
@@ -145,6 +176,10 @@ final class MessageEndpoints {
     static <P, K> RouterSpec<P, K> route(
             String expression, Consumer<RouterEndpointSpec<K, ExpressionEvaluatingRouter>> routerConfigurer = null) {
         new RouterSpec<P, K>(expression, routerConfigurer)
+    }
+
+    static <P, K> RouterSpec<P, K> route(String expression, Map<K, Closure> subFlows) {
+        route expression, routeMapSpec(ExpressionEvaluatingRouter, subFlows)
     }
 
     static RouterSpec route(String beanName, String methodName,
@@ -161,6 +196,10 @@ final class MessageEndpoints {
             Class<P> payloadType = null, Function<P, K> router,
             Consumer<RouterEndpointSpec<K, MethodInvokingRouter>> endpointConfigurer = null) {
         new RouterSpec<P, K>(payloadType, router, endpointConfigurer)
+    }
+
+    static <P, K> RouterSpec<P, K> route(Class<P> payloadType = null, Function<P, K> router, Map<K, Closure> subFlows) {
+        route payloadType, router, routeMapSpec(subFlows)
     }
 
     static RouterSpec route(MessageProcessorSpec processorSpec,

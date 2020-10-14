@@ -2,7 +2,7 @@ package pub.ihub.dsl.test.basis
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.integration.channel.DirectChannel
+import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.messaging.support.GenericMessage
 import pub.ihub.dsl.test.config.ServiceFTConfig
 import spock.lang.Specification
@@ -20,7 +20,7 @@ import spock.lang.Unroll
 class IntegrationRouteFT extends Specification {
 
     @Autowired
-    private DirectChannel test6
+    private PublishSubscribeChannel routeChannel
 
     /**
      * 用例01
@@ -30,7 +30,7 @@ class IntegrationRouteFT extends Specification {
         given: '初始化参数'
 
         when: '执行内置流程'
-        test6.send new GenericMessage<String>('分支一')
+        routeChannel.send new GenericMessage<String>('test1', [route: '分支一'])
 
         then: '校验期望结果'
         true
@@ -40,11 +40,11 @@ class IntegrationRouteFT extends Specification {
      * 用例02
      */
     @Unroll
-    '单元测试：测试DSL配置内置流程2'() {
+    '单元测试：测试DSL配置内置流程1'() {
         given: '初始化参数'
 
         when: '执行内置流程'
-        test6.send new GenericMessage<String>('分支二')
+        routeChannel.send new GenericMessage<String>('test2', [route: '分支二'])
 
         then: '校验期望结果'
         true

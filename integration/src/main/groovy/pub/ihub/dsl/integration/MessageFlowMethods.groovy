@@ -14,6 +14,7 @@ import org.springframework.integration.endpoint.MessageProducerSupport
 import org.springframework.integration.gateway.MessagingGatewaySupport
 import org.springframework.integration.handler.GenericHandler
 import org.springframework.integration.router.AbstractMessageRouter
+import org.springframework.integration.router.ExpressionEvaluatingRouter
 import org.springframework.integration.splitter.AbstractMessageSplitter
 import org.springframework.integration.transformer.GenericTransformer
 import org.springframework.messaging.MessageChannel
@@ -22,7 +23,8 @@ import org.springframework.messaging.MessageHandler
 import java.util.function.Supplier
 
 import static org.springframework.integration.dsl.IntegrationFlows.from
-import static pub.ihub.dsl.DSLActuator.threadLocalActuator
+import static pub.ihub.dsl.integration.MessageEndpoints.routeMapSpec
+import static pub.ihub.dsl.integration.MessageFlowBuilder.definitionBuilder
 
 
 
@@ -106,7 +108,7 @@ class MessageFlowMethods {
      * @return 消息流程
      */
     static IntegrationFlowBuilder rightShift(first, second) {
-        new IntegrationFlowBuilder() >> first >> second
+        definitionBuilder >> first >> second
     }
 
     //</editor-fold>
@@ -148,34 +150,22 @@ class MessageFlowMethods {
 
     //<editor-fold defaultState="collapsed" desc="路由">
 
-    /**
-     * 默认路由分支标识
-     */
-    static final DEFAULT_ROUTE = 'default'
-
     static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, AbstractMessageRouter router) {
         builder.route router
     }
 
-    // TODO 预留Map路由
     /**
-     * 简单payload type路由
+     * 简单路由
+     *
+     * 通过headers.route标记选择分支
+     * 注意：表达式路由后不可以再接其他步骤
+     *
      * @param builder 构建器
      * @param subFlows 分支流程
      * @return 构建器
      */
-    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, Map<Object, Closure> subFlows) {
-        builder.route 'payload', { spec ->
-            def defaultRoute = subFlows.remove DEFAULT_ROUTE
-            def threadLocalActuator = threadLocalActuator as MessageFlowBuilder
-            spec.resolutionRequired !defaultRoute
-            subFlows.each { key, subFlow ->
-                spec.subFlowMapping key, threadLocalActuator.build(subFlow)
-            }
-            if (defaultRoute) {
-                spec.defaultSubFlowMapping threadLocalActuator.build(defaultRoute)
-            }
-        }
+    static <K> IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, Map<K, Closure> subFlows) {
+        builder.route 'headers.route', routeMapSpec(ExpressionEvaluatingRouter, subFlows)
     }
 
     //</editor-fold>
@@ -185,28 +175,6 @@ class MessageFlowMethods {
     static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, AbstractMessageSplitter splitter) {
         builder.split splitter
     }
-
-//    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder,
-//                                             Consumer<SplitterEndpointSpec<DefaultMessageSplitter>> splitter) {
-//        builder.split splitter
-//    }
-
-    //</editor-fold>
-
-    //<editor-fold defaultState="collapsed" desc="聚合器">
-
-//    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder, Consumer<AggregatorSpec> aggregator) {
-//        builder.aggregate aggregator
-//    }
-
-    //</editor-fold>
-
-    //<editor-fold defaultState="collapsed" desc="桥">
-
-//    static IntegrationFlowBuilder rightShift(IntegrationFlowBuilder builder,
-//                                             Consumer<GenericEndpointSpec<BridgeHandler>> endpointConfigurer) {
-//        builder.bridge endpointConfigurer
-//    }
 
     //</editor-fold>
 

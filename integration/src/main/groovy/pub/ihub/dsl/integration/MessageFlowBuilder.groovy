@@ -34,6 +34,10 @@ class MessageFlowBuilder extends DSLActuator<IntegrationFlowBuilder> {
         super(nameClassMappings, nameFlowMappings, flows)
     }
 
+    static IntegrationFlowBuilder getDefinitionBuilder() {
+        new IntegrationFlowBuilder()
+    }
+
     //<editor-fold defaultState="collapsed" desc="消息通道开启流程">
 
     static IntegrationFlowBuilder from(String messageChannelName, boolean fixedSubscriber) {
@@ -84,7 +88,7 @@ class MessageFlowBuilder extends DSLActuator<IntegrationFlowBuilder> {
     protected IntegrationFlowBuilder doCall(Class groovyMethods, Closure flow, ... args) {
         use(groovyMethods, flow.with { it.rehydrate this, owner, thisObject }).with {
             // 处理流程只有单个节点的情况
-            it instanceof IntegrationFlowBuilder ? it : rightShift(new IntegrationFlowBuilder(), it)
+            it instanceof IntegrationFlowBuilder ? it : rightShift(definitionBuilder, it)
         }
     }
 
