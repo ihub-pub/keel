@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.integration.dsl.MessageHandlerSpec
 import org.springframework.integration.dsl.MessageProcessorSpec
 import org.springframework.integration.handler.MessageProcessor
+import org.springframework.integration.router.MethodInvokingRouter
 import org.springframework.integration.router.PayloadTypeRouter
 import org.springframework.messaging.MessageHandler
 import pub.ihub.dsl.integration.MessageFlowBuilder
@@ -14,6 +15,7 @@ import pub.ihub.dsl.test.endpoint.TestGenericSelector
 import pub.ihub.dsl.test.endpoint.TestGenericTransformer
 import pub.ihub.dsl.test.endpoint.TestHandler
 import pub.ihub.dsl.test.endpoint.TestMessageHandler
+import pub.ihub.dsl.test.endpoint.TestRouter
 import pub.ihub.dsl.test.endpoint.TestTransformer
 
 import static org.springframework.integration.dsl.MessageChannels.publishSubscribe
@@ -34,6 +36,11 @@ class TestIntegrationConfig {
     @Bean
     TestHandler handler() {
         new TestHandler(name: 'bean')
+    }
+
+    @Bean
+    TestRouter router() {
+        new TestRouter(name: '路由器三')
     }
 
     @Bean
@@ -102,7 +109,19 @@ class TestIntegrationConfig {
 
                 }),
                 转换器五   : new TestGenericTransformer(name: '转换器五'),
-                路由器一   : route(new PayloadTypeRouter())
+                // TODO 加入流程
+                路由器一   : new PayloadTypeRouter(),
+                路由器二   : route(new MethodInvokingRouter(new TestRouter(name: '路由器二'))),
+                路由器三   : route('router', 'processMessage'),
+                路由器四   : route(new TestRouter(name: '路由器四'), 'processMessage'),
+                路由器五   : route(new MessageProcessorSpec<MessageProcessorSpec>() {
+
+                    @Override
+                    protected MessageProcessor doGet() {
+                        new TestRouter(name: '路由器五')
+                    }
+
+                })
         ], [
                 流程一     : {
                     测试通道一 >> 处理器一 >> 处理器二
@@ -142,6 +161,12 @@ class TestIntegrationConfig {
                 },
                 路由器测试流程四: {
                     路由器测试通道 >> route(String) { payload -> payload }
+                },
+                路由器测试流程五: {
+                    路由器测试通道 >> route(String, { payload -> payload }, [
+                            test1: { 过滤器一 >> 过滤器二 >> 过滤器三 >> 处理器十 },
+                            test2: { 处理器一 >> 处理器十 }
+                    ])
                 }
         ])
     }
