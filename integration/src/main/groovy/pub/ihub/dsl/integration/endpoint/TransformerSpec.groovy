@@ -33,7 +33,7 @@ class TransformerSpec<S, T> extends AEndpointSpec<S, GenericTransformer<S, T>, G
         super(expression, endpointConfigurer)
     }
 
-    TransformerSpec(Object service, String methodName = null,
+    TransformerSpec(Object service, String methodName,
                     Consumer<GenericEndpointSpec<MessageTransformingHandler>> endpointConfigurer = null) {
         super(service, methodName, endpointConfigurer)
     }

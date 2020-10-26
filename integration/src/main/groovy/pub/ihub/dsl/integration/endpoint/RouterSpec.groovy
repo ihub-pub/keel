@@ -54,7 +54,7 @@ class RouterSpec<P, K> extends AEndpointSpec<P, Function<P, K>, RouterEndpointSp
         super(beanName, methodName, endpointConfigurer)
     }
 
-    RouterSpec(Object service, String methodName = null,
+    RouterSpec(Object service, String methodName,
                Consumer<RouterEndpointSpec<Object, MethodInvokingRouter>> endpointConfigurer = null) {
         super(service, methodName, endpointConfigurer)
     }

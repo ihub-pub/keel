@@ -70,7 +70,7 @@ final class MessageEndpoints {
         new HandlerSpec(beanName, methodName, endpointConfigurer)
     }
 
-    static HandlerSpec handle(Object service, String methodName = null,
+    static HandlerSpec handle(Object service, String methodName,
                               Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
         new HandlerSpec(service, methodName, endpointConfigurer)
     }
@@ -94,7 +94,7 @@ final class MessageEndpoints {
         new FilterSpec(expression, endpointConfigurer)
     }
 
-    static FilterSpec filter(Object service, String methodName = null,
+    static FilterSpec filter(Object service, String methodName,
                              Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         new FilterSpec(service, methodName, endpointConfigurer)
     }
@@ -119,7 +119,7 @@ final class MessageEndpoints {
     }
 
     static TransformerSpec transform(
-            Object service, String methodName = null,
+            Object service, String methodName,
             Consumer<GenericEndpointSpec<MessageTransformingHandler>> endpointConfigurer = null) {
         new TransformerSpec(service, methodName, endpointConfigurer)
     }
@@ -187,7 +187,7 @@ final class MessageEndpoints {
         new RouterSpec(beanName, methodName, endpointConfigurer)
     }
 
-    static RouterSpec route(Object service, String methodName = null,
+    static RouterSpec route(Object service, String methodName,
                             Consumer<RouterEndpointSpec<Object, MethodInvokingRouter>> endpointConfigurer = null) {
         new RouterSpec(service, methodName, endpointConfigurer)
     }
@@ -211,7 +211,11 @@ final class MessageEndpoints {
 
     //<editor-fold defaultState="collapsed" desc="拆分器">
 
-    static SplitterSpec split(Consumer<SplitterEndpointSpec<DefaultMessageSplitter>> endpointConfigurer = null) {
+    static SplitterSpec getSplit() {
+        new SplitterSpec()
+    }
+
+    static SplitterSpec split(Consumer<SplitterEndpointSpec<DefaultMessageSplitter>> endpointConfigurer) {
         new SplitterSpec(endpointConfigurer)
     }
 
@@ -230,7 +234,7 @@ final class MessageEndpoints {
         new SplitterSpec(beanName, methodName, endpointConfigurer)
     }
 
-    static SplitterSpec split(Object service, String methodName = null,
+    static SplitterSpec split(Object service, String methodName,
                               Consumer<SplitterEndpointSpec<MethodInvokingSplitter>> endpointConfigurer = null) {
         new SplitterSpec(service, methodName, endpointConfigurer)
     }

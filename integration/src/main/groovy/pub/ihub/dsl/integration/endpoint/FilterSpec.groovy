@@ -27,7 +27,7 @@ class FilterSpec<P> extends AEndpointSpec<P, GenericSelector<P>, FilterEndpointS
         super(expression, endpointConfigurer)
     }
 
-    FilterSpec(Object service, String methodName = null, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
+    FilterSpec(Object service, String methodName, Consumer<FilterEndpointSpec> endpointConfigurer = null) {
         super(service, methodName, endpointConfigurer)
     }
 

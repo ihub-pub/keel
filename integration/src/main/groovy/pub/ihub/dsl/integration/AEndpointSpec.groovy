@@ -60,6 +60,7 @@ abstract class AEndpointSpec<P, F, T> {
     }
 
     // TODO 确认 methodName = null
+    // 目前观察，groovy对象不传方法名时会存在方法混淆的问题，至少会有MetaClass相关方法，建议指定方法名
     protected AEndpointSpec(Object service, String methodName, Consumer<T> endpointConfigurer) {
         this(OBJECT)
         this.service = service

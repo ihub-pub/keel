@@ -53,7 +53,7 @@ class SplitterSpec<P> extends AEndpointSpec<P, Function<P, ?>, SplitterEndpointS
         super(beanName, methodName, endpointConfigurer)
     }
 
-    SplitterSpec(Object service, String methodName = null,
+    SplitterSpec(Object service, String methodName,
                  Consumer<SplitterEndpointSpec<MethodInvokingSplitter>> endpointConfigurer = null) {
         super(service, methodName, endpointConfigurer)
     }

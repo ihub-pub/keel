@@ -50,7 +50,7 @@ class HandlerSpec<P> extends AEndpointSpec<P, GenericHandler<P>, GenericEndpoint
         super(beanName, methodName, endpointConfigurer)
     }
 
-    HandlerSpec(Object service, String methodName = null,
+    HandlerSpec(Object service, String methodName,
                 Consumer<GenericEndpointSpec<ServiceActivatingHandler>> endpointConfigurer = null) {
         super(service, methodName, endpointConfigurer)
     }

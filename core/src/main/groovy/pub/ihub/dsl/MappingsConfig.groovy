@@ -78,13 +78,13 @@ class MappingsConfig {
     }
 
     Closure getFlow(String name) {
-        flows[name].tap {
-            if (it) {
-                log.trace '获取 <<<流程<<< {}', name
-            } else {
-                log.error '流程没有定义：{}', name
-                throw new MissingPropertyException(name, this.class)
-            }
+        def flow = flows[name]
+        if (flow) {
+            log.trace '获取 <<<流程<<< {}', name
+            flow
+        } else {
+            log.error '流程没有定义：{}', name
+            throw new MissingPropertyException(name, this.class)
         }
     }
 
@@ -93,12 +93,15 @@ class MappingsConfig {
     }
 
     def getMissProperty(String name, delegate) {
-        nameClassMappings[name]?.tap {
-            log.trace '获取 <<<步骤/属性<<< {} <- {}', name, it
-        } ?: nameFlowMappings[name].with {
-            if (it) {
+        def step = nameClassMappings[name]
+        if (step) {
+            log.trace '获取 <<<步骤/属性<<< {} <- {}', name, step
+            step
+        } else {
+            def flow = nameFlowMappings[name]
+            if (flow) {
                 log.trace '获取 <<<子流程<<< {}', name
-                it.rehydrate delegate, owner, thisObject
+                flow.with { it.rehydrate delegate, owner, thisObject }
             } else {
                 log.error '步骤/属性没有定义：{}', name
                 throw new MissingPropertyException(name, this.class)

@@ -22,6 +22,7 @@ import static org.springframework.integration.dsl.MessageChannels.publishSubscri
 import static pub.ihub.dsl.integration.MessageEndpoints.filter
 import static pub.ihub.dsl.integration.MessageEndpoints.handle
 import static pub.ihub.dsl.integration.MessageEndpoints.route
+import static pub.ihub.dsl.integration.MessageEndpoints.split
 import static pub.ihub.dsl.integration.MessageEndpoints.transform
 
 
@@ -53,6 +54,7 @@ class TestIntegrationConfig {
                 测试通道四  : 'test4',
                 测试通道五  : 'test5',
                 路由器测试通道: publishSubscribe('routeChannel'),
+                分流器测试通道: publishSubscribe('splitChannel'),
                 处理器一   : new TestGenericHandler(name: '处理器一'),
                 处理器二   : new TestMessageHandler(name: '处理器二'),
                 处理器十   : new MessageHandlerSpec<MessageHandlerSpec, MessageHandler>() {
@@ -121,7 +123,8 @@ class TestIntegrationConfig {
                         new TestRouter(name: '路由器五')
                     }
 
-                })
+                }),
+                分流器一   : split(new TestRouter(name: '路由器四'), 'processMessage')
         ], [
                 流程一     : {
                     测试通道一 >> 处理器一 >> 处理器二
@@ -167,6 +170,12 @@ class TestIntegrationConfig {
                             test1: { 过滤器一 >> 过滤器二 >> 过滤器三 >> 处理器十 },
                             test2: { 处理器一 >> 处理器十 }
                     ])
+                },
+                路由器测试流程六: {
+                    路由器测试通道 >> 路由器二
+                },
+                分流器测试流程一: {
+                    分流器测试通道 >> split >> 处理器十
                 }
         ])
     }
