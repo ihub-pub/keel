@@ -1,4 +1,7 @@
 # DSL(Domain Specified Language)-领域特定语言
+
+[![Join the chat at https://gitter.im/ihub-pub/keel](https://badges.gitter.im/ihub-pub/keel.svg)](https://gitter.im/ihub-pub/keel?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Gradle Build](https://github.com/ihub-pub/keel/workflows/Gradle%20Build/badge.svg)
 ![GitHub](https://img.shields.io/github/license/ihub-pub/keel)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ihub-pub/keel) 
