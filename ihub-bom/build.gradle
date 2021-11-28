@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'pub.ihub.plugin.ihub-settings' version '1.1.11'
+apply {
+    plugin 'java-platform'
+    plugin 'pub.ihub.plugin.ihub-publish'
 }
-
-iHubSettings {
-    includeProjects 'ihub-bom', 'ihub-dsl' noPrefix
+javaPlatform {
+    allowDependencies()
+}
+dependencies {
+    constraints {
+        rootProject.allprojects.each {
+            if (it.plugins.hasPlugin('pub.ihub.plugin.ihub-publish') && it != project) {
+                api "${rootProject.group}:$it.name:${rootProject.version}"
+            }
+        }
+    }
 }

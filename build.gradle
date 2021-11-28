@@ -1,35 +1,15 @@
-/**
- +---------+
- | Plugins |
- +---------+
- */
-//plugins {
-//    id 'com.github.ben-manes.versions'      version "$uptodate_version"
-//    id 'com.palantir.git-version'           version "$palantir_gitversion_version"
-//    id 'io.freefair.lombok'                 version "$freefair_lombok_version"
-//    id 'io.spring.dependency-management'    version "$spring_io_dep_version"
-//    id 'org.springframework.boot'           version "$spring_boot_starter_version"
-//}
-
-ext.getSystemProperty = { String name ->
-    System.getProperty(name) ?: System.getenv(name.replaceAll(/\.|-/, '_').toUpperCase())
+plugins {
+    id 'pub.ihub.plugin'
 }
 
-/**
- +----------------+
- | Build Settings |
- +----------------+
- */
 subprojects {
+    if (project.name == 'ihub-bom') {
+        return
+    }
     apply {
-        from rootProject.file('gradle/default_plugins.gradle')
-        from rootProject.file('gradle/default_deps.gradle')
-        from rootProject.file('gradle/groovy_essential_deps.gradle')
-        from rootProject.file('gradle/verification_settings.gradle')
+        plugin 'pub.ihub.plugin.ihub-java'
+        plugin 'pub.ihub.plugin.ihub-test'
+        plugin 'pub.ihub.plugin.ihub-verification'
+        plugin 'pub.ihub.plugin.ihub-publish'
     }
-
-    dependencies {
-        implementation  "org.slf4j:slf4j-api:$slf4j_version"
-    }
-
 }
