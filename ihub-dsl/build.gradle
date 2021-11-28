@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'pub.ihub.plugin.ihub-settings' version '1.1.11'
-}
+description 'DSL(Domain-Specified Language)-领域特定语言组件'
 
-iHubSettings {
-    includeProjects 'ihub-bom', 'ihub-dsl' noPrefix
+apply {
+    plugin 'pub.ihub.plugin.ihub-groovy'
 }
