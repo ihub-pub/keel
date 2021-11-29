@@ -108,15 +108,15 @@ class DSLActuator<T> {
         }
     }
 
-    private static runMethod(Closure method, args) {
+    static runMethod(Closure method, args) {
         method getArgs(args)
     }
 
-    private static runMethod(DSLMethod method, args) {
+    static runMethod(DSLMethod method, args) {
         method args as Object[]
     }
 
-    private static runMethod(method, args) {
+    static runMethod(method, args) {
         throw new DSLException("${method.toString()}方法类型无法执行！")
     }
 

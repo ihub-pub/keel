@@ -1,18 +1,18 @@
 description = '基于DSL的Spring Integration组件'
 
 apply {
-    from rootProject.file('gradle/publishing_settings.gradle')
+    plugin 'pub.ihub.plugin.ihub-groovy'
 }
 
 dependencies {
-    implementation      project(':core')
+    implementation project(':ihub-keel-core')
 
-    implementation      "javax.annotation:javax.annotation-api:$javax_annotation_version"
+    implementation 'javax.annotation:javax.annotation-api'
 
 //    implementation      "org.springframework:spring-webmvc:$spring_version"
-    implementation      "org.springframework.integration:spring-integration-core:$spring_integration_version"
+    implementation 'org.springframework.integration:spring-integration-core'
 //                        "org.springframework.integration:spring-integration-groovy:$spring_integration_version"
 
-    testImplementation  project(':test'),
-                        "org.springframework.integration:spring-integration-test:$spring_integration_version"
+    testImplementation project(':ihub-keel-test'),
+        'org.springframework.integration:spring-integration-test'
 }
