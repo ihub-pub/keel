@@ -1,13 +1,17 @@
 description = 'DSL测试组件'
 
+apply {
+    plugin 'pub.ihub.plugin.ihub-groovy'
+}
+
 dependencies {
 
     // Spring Framework
-    api "org.springframework.boot:spring-boot-starter-test:$spring_boot_starter_version"
+    api 'org.springframework.boot:spring-boot-starter-test'
     // Spock Framework
-    api "org.spockframework:spock-spring:$spock_framework_version"
+    api 'org.spockframework:spock-spring'
     // Spock Reports
-    testRuntimeOnly("com.athaydes:spock-reports:$spock_reports_version") {
+    testRuntimeOnly('com.athaydes:spock-reports') {
         transitive = false
     }
 

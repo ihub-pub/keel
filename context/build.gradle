@@ -1,11 +1,11 @@
 description = '基于上下文的DSL组件'
 
 apply {
-    from rootProject.file('gradle/publishing_settings.gradle')
+    plugin 'pub.ihub.plugin.ihub-groovy'
 }
 
 dependencies {
-    implementation project(':core')
+    implementation project(':ihub-keel-core')
 
-    testImplementation project(':test')
+    testImplementation project(':ihub-keel-test')
 }
