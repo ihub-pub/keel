@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'pub.ihub.plugin.ihub-settings' version '1.1.11'
-}
+package pub.ihub.keel.core;
 
-iHubSettings {
-    includeProjects 'ihub-bom', 'ihub-core', 'ihub-adapter', 'ihub-domain', 'ihub-dsl' noPrefix
+import java.io.Serializable;
+
+/**
+ * 业务编码
+ *
+ * @author liheng
+ */
+public interface BusinessCode extends Serializable {
+
 }
