@@ -13,10 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'pub.ihub.plugin.ihub-settings' version '1.1.11'
-}
-
-iHubSettings {
-    includeProjects 'ihub-bom', 'ihub-core', 'ihub-adapter', 'ihub-domain', 'ihub-dsl' noPrefix
-}
+description '领域核心组件'

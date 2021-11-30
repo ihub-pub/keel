@@ -13,3 +13,13 @@ subprojects {
         plugin 'pub.ihub.plugin.ihub-publish'
     }
 }
+
+apply {
+    plugin 'pub.ihub.plugin.ihub-git-hooks'
+}
+
+iHubGitHooks {
+    hooks = [
+            'pre-commit': './gradlew build'
+    ]
+}
