@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-	id 'pub.ihub.plugin'
-}
+package pub.ihub.keel.domain;
 
-subprojects {
-	if (project.name == 'ihub-bom') {
-		return
-	}
-	apply {
-		plugin 'pub.ihub.plugin.ihub-java'
-		plugin 'pub.ihub.plugin.ihub-test'
-		plugin 'pub.ihub.plugin.ihub-verification'
-		plugin 'pub.ihub.plugin.ihub-publish'
-	}
-	dependencies {
-		if (project.name != 'ihub-core') {
-			implementation project(':ihub-core')
-		}
-	}
-}
+import lombok.Builder;
+import lombok.Data;
 
-apply {
-	plugin 'pub.ihub.plugin.ihub-git-hooks'
-}
+import java.io.Serializable;
+import java.util.List;
 
-iHubGitHooks {
-	hooks = ['pre-commit': './gradlew build']
+/**
+ * 领域对象模型
+ *
+ * @author liheng
+ */
+@Data
+@Builder
+public class DomainModel implements Serializable {
+
+	private static final long serialVersionUID = 166989514773570017L;
+
+	private ADomainModel annotation;
+	private String name;
+	private List<DomainModel> fields;
+	private List<DomainModel> methods;
+
 }

@@ -27,21 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @DisplayName("业务异常测试")
 class BusinessExceptionTest {
 
-    @DisplayName("业务异常测试")
-    @Test
-    void getCode() {
-        assertNull(new BusinessException().getCode());
-        assertNotNull(new BusinessException(EBusinessCode.ERROR).getCode());
-        assertNotNull(new BusinessException(EBusinessCode.ERROR, "系统错误！").getCode());
-        assertNotNull(new BusinessException(EBusinessCode.ERROR, "系统错误！", new RuntimeException("系统错误！")).getCode());
-        assertNotNull(new BusinessException(EBusinessCode.ERROR, new RuntimeException("系统错误！")).getCode());
-    }
+	@DisplayName("业务异常编码测试")
+	@Test
+	void getCode() {
+		assertNull(new BusinessException().getCode());
+		assertNotNull(new BusinessException(EBusinessCode.ERROR).getCode());
+		assertNotNull(new BusinessException(EBusinessCode.ERROR, "系统错误！").getCode());
+		assertNotNull(new BusinessException(EBusinessCode.ERROR, "系统错误！", new RuntimeException("系统错误！")).getCode());
+		assertNotNull(new BusinessException(EBusinessCode.ERROR, new RuntimeException("系统错误！")).getCode());
+	}
 
-    private enum EBusinessCode implements BusinessCode {
-        /**
-         * 错误
-         */
-        ERROR
-    }
+	private enum EBusinessCode implements BusinessCode {
+		/**
+		 * 错误
+		 */
+		ERROR
+	}
 
 }

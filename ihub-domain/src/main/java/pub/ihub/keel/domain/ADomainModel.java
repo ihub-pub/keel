@@ -13,31 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-	id 'pub.ihub.plugin'
-}
+package pub.ihub.keel.domain;
 
-subprojects {
-	if (project.name == 'ihub-bom') {
-		return
-	}
-	apply {
-		plugin 'pub.ihub.plugin.ihub-java'
-		plugin 'pub.ihub.plugin.ihub-test'
-		plugin 'pub.ihub.plugin.ihub-verification'
-		plugin 'pub.ihub.plugin.ihub-publish'
-	}
-	dependencies {
-		if (project.name != 'ihub-core') {
-			implementation project(':ihub-core')
-		}
-	}
-}
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-apply {
-	plugin 'pub.ihub.plugin.ihub-git-hooks'
-}
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-iHubGitHooks {
-	hooks = ['pre-commit': './gradlew build']
+/**
+ * 领域模型
+ *
+ * @author liheng
+ */
+@Target({FIELD, TYPE, METHOD})
+@Retention(RUNTIME)
+@Documented
+public @interface ADomainModel {
+
+	/**
+	 * 领域属性
+	 *
+	 * @return 属性值
+	 */
+	String value();
+
 }
