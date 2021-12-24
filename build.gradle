@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 plugins {
-	id 'pub.ihub.plugin'
+    id 'pub.ihub.plugin'
 }
 
 subprojects {
-	if (project.name == 'ihub-bom') {
-		return
-	}
-	apply {
-		plugin 'pub.ihub.plugin.ihub-java'
-		plugin 'pub.ihub.plugin.ihub-test'
-		plugin 'pub.ihub.plugin.ihub-verification'
-		plugin 'pub.ihub.plugin.ihub-publish'
-	}
-	dependencies {
-		if (project.name != 'ihub-core') {
-			implementation project(':ihub-core')
-		}
-	}
+    if (project.name == 'ihub-bom') {
+        return
+    }
+    apply {
+        plugin 'pub.ihub.plugin.ihub-java'
+        plugin 'pub.ihub.plugin.ihub-test'
+        plugin 'pub.ihub.plugin.ihub-verification'
+        plugin 'pub.ihub.plugin.ihub-publish'
+    }
+    dependencies {
+        if (project.name != 'ihub-core') {
+            implementation project(':ihub-core')
+        }
+    }
 }
 
 apply {
-	plugin 'pub.ihub.plugin.ihub-git-hooks'
+    plugin 'pub.ihub.plugin.ihub-git-hooks'
 }
 
 iHubGitHooks {
-	hooks = ['pre-commit': './gradlew build']
+    hooks = [
+        'pre-commit': './gradlew build'
+    ]
 }

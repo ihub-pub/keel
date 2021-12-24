@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 plugins {
-    id 'pub.ihub.plugin.ihub-settings' version '1.2.0'
+    id 'pub.ihub.plugin.ihub-settings' version '1.2.1'
 }
 
 iHubSettings {
-    includeProjects 'ihub-bom', 'ihub-core', 'ihub-adapter', 'ihub-domain', 'ihub-dsl' noPrefix
+    includeProjects 'ihub-core', 'ihub-adapter', 'ihub-domain', 'ihub-dsl' noPrefix
 }
