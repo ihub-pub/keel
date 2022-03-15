@@ -29,10 +29,6 @@ subprojects {
     }
 }
 
-apply {
-    plugin 'pub.ihub.plugin.ihub-git-hooks'
-}
-
 iHubGitHooks {
     hooks = [
         'pre-commit': './gradlew build'
